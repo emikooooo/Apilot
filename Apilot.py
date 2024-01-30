@@ -326,24 +326,25 @@ class Apilot(Plugin):
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
 
-    def get_hot_trends(self, hot_trends_type):
+    def get_hot_trends(self, alapi_token, hot_trends_type):
         # 查找映射字典以获取API参数
         hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
+        payload = f"token={alapi_token}&type={hot_trends_type_en}"
+        headers = {'Content-Type': "application/x-www-form-urlencoded"}
         if hot_trends_type_en is not None:
-            url = BASE_URL_VVHAN + "hotlist?type=" + hot_trends_type_en
+            url = BASE_URL_ALAPI + "tophub"
             try:
-                data = self.make_request(url, "GET")
-                if isinstance(data, dict) and data['success'] == True:
-                    output = []
-                    topics = data['data']
-                    output.append(f'更新时间：{data["update_time"]}\n')
-                    for i, topic in enumerate(topics[:15], 1):
-                        hot = topic.get('hot', '无热度参数, 0')
-                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
-                        output.append(formatted_str)
-                    return "\n".join(output)
+                # 发送请求
+                hot_trends_data = self.make_request(url, method="POST", headers=headers, data=payload)
+                if isinstance(hot_trends_data, dict) and hot_trends_data.get('code') == 200:
+                    data = hot_trends_data['data']
+                    result = [f"热榜名称：{data['name']}，更新时间：{data['last_update']}"]
+                    # 遍历热榜列表，格式化输出
+                    for item in data['list']:
+                        result.append(f"标题：{item['title']}\n链接：{item['link']}\n热度：{item.get('other', '未知')}\n")
+                    return "\n".join(result)
                 else:
-                    return self.handle_error(data, "热榜获取失败，请稍后再试")
+                    return self.handle_error(hot_trends_data, "热榜获取失败，请检查 token 是否有误")
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
         else:
