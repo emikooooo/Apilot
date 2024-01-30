@@ -312,7 +312,6 @@ class Apilot(Plugin):
     url = BASE_URL_ALAPI + "tophub"
     payload = f"token={alapi_token}&type={hot_trends_type}"
     headers = {'Content-Type': "application/x-www-form-urlencoded"}
-
     try:
         # 发送请求
         hot_trends_data = self.make_request(url, method="POST", headers=headers, data=payload)
@@ -321,7 +320,6 @@ class Apilot(Plugin):
         if isinstance(hot_trends_data, dict) and hot_trends_data.get('code') == 200:
             data = hot_trends_data['data']
             result = [f"热榜名称：{data['name']}，更新时间：{data['last_update']}"]
-
             # 遍历热榜列表，格式化输出
             for item in data['list']:
                 result.append(f"标题：{item['title']}\n链接：{item['link']}\n热度：{item.get('other', '未知')}\n")
@@ -560,5 +558,4 @@ hot_trend_types = {
     "吾爱破解热榜": "52pojie",
     "V2ex热榜": "v2ex",
     "全球主机论坛热榜": "hostloc"
-
 }
