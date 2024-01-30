@@ -326,31 +326,34 @@ class Apilot(Plugin):
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
 
-
-
-    def get_hot_trends(self, alapi_token, hot_trends_type):
-    # 使用 ALAPI 的 URL 和提供的 token
-    url = BASE_URL_ALAPI + "tophub"
-    payload = f"token={alapi_token}&type={hot_trends_type}"
-    headers = {'Content-Type': "application/x-www-form-urlencoded"}
-    try:
-        # 发送请求
-        hot_trends_data = self.make_request(url, method="POST", headers=headers, data=payload)
-
-        # 检查响应
-        if isinstance(hot_trends_data, dict) and hot_trends_data.get('code') == 200:
-            data = hot_trends_data['data']
-            result = [f"热榜名称：{data['name']}，更新时间：{data['last_update']}"]
-            # 遍历热榜列表，格式化输出
-            for item in data['list']:
-                result.append(f"标题：{item['title']}\n链接：{item['link']}\n热度：{item.get('other', '未知')}\n")
-
-            return "\n".join(result)
+    def get_hot_trends(self, hot_trends_type):
+        # 查找映射字典以获取API参数
+        hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
+        if hot_trends_type_en is not None:
+            url = BASE_URL_VVHAN + "hotlist?type=" + hot_trends_type_en
+            try:
+                data = self.make_request(url, "GET")
+                if isinstance(data, dict) and data['success'] == True:
+                    output = []
+                    topics = data['data']
+                    output.append(f'更新时间：{data["update_time"]}\n')
+                    for i, topic in enumerate(topics[:15], 1):
+                        hot = topic.get('hot', '无热度参数, 0')
+                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
+                        output.append(formatted_str)
+                    return "\n".join(output)
+                else:
+                    return self.handle_error(data, "热榜获取失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
         else:
-            return self.handle_error(hot_trends_data, "热榜获取失败，请检查 token 是否有误")
-    except Exception as e:
-        return self.handle_error(e, "热榜获取过程中出现错误")
-        
+            supported_types = "/".join(hot_trend_types.keys())
+            final_output = (
+                f"👉 已支持的类型有：\n\n    {supported_types}\n"
+                f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
+            )
+            return final_output
+
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
         url = BASE_URL_ALAPI + "kd"
         payload = f"token={alapi_token}&number={tracking_number}&com={com}&order={order}"
@@ -562,21 +565,14 @@ ZODIAC_MAPPING = {
     }
 
 hot_trend_types = {
-    "知乎热榜": "zhihu",
-    "微博热榜": "weibo",
-    "微信热榜": "weixin",
-    "百度热榜": "baidu",
-    "今日头条": "toutiao",
-    "网易热榜": "163",
-    "新浪热榜": "xl",
-    "36氪热榜": "36k",
-    "历史上的今天": "hitory",
-    "少数派": "sspai",
-    "CSDN热榜": "csdn",
-    "掘金热榜": "juejin",
-    "哔哩哔哩热榜": "bilibili",
-    "抖音热榜": "douyin",
-    "吾爱破解热榜": "52pojie",
-    "V2ex热榜": "v2ex",
-    "全球主机论坛热榜": "hostloc"
+    "微博": "wbHot",
+    "虎扑": "huPu",
+    "知乎": "zhihuHot",
+    "哔哩哔哩": "bili",
+    "36氪": "36Ke",
+    "抖音": "douyinHot",
+    "少数派": "ssPai",
+    "IT最新": "itNews",
+    "IT科技": "itInfo"
+
 }
