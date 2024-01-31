@@ -338,7 +338,7 @@ class Apilot(Plugin):
                 if isinstance(data, dict) and data['success'] == True:
                     output = []
                     topics = data['data']
-                    output.append(f'更新时间：{data["update_time"]}\n')
+                    output.append(f'热榜名称：{data["name"]}\n更新时间：{data["last_update"]}\n')
                     for i, topic in enumerate(topics[:15], 1):
                         hot = topic.get('hot', '无热度参数, 0')
                         formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
@@ -567,14 +567,22 @@ ZODIAC_MAPPING = {
     }
 
 hot_trend_types = {
-    "微博": "wbHot",
-    "虎扑": "huPu",
-    "知乎": "zhihuHot",
-    "哔哩哔哩": "bili",
-    "36氪": "36Ke",
-    "抖音": "douyinHot",
-    "少数派": "ssPai",
-    "IT最新": "itNews",
-    "IT科技": "itInfo"
+    "知乎热榜": "zhihu",
+    "微博热榜": "weibo",
+    "微信热榜": "weixin",
+    "百度热榜": "baidu",
+    "今日头条": "toutiao",
+    "网易热榜": "163",
+    "新浪热榜": "xl",
+    "36氪热榜": "36k",
+    "历史上的今天": "hitory",
+    "少数派": "sspai",
+    "CSDN热榜": "csdn",
+    "掘金热榜": "juejin",
+    "哔哩哔哩热榜": "bilibili",
+    "抖音热榜": "douyin",
+    "吾爱破解热榜": "52pojie",
+    "V2ex热榜": "v2ex",
+    "全球主机论坛热榜": "hostloc"
 
 }
