@@ -327,15 +327,20 @@ class Apilot(Plugin):
                 return self.handle_error(e, "出错啦，稍后再试")
 
     def get_hot_trends(self, alapi_token, hot_trends_type):
+        print(f"调用 get_hot_trends: token={alapi_token}, type={hot_trends_type}")
         # 查找映射字典以获取API参数
         hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
+        print(f"映射后的热榜类型: {hot_trends_type_en}")
         payload = f"token={alapi_token}&type={hot_trends_type_en}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
+        print(f"请求 URL: {url}")
+        print(f"请求 Payload: {payload}")
         if hot_trends_type_en is not None:
             url = BASE_URL_ALAPI + "tophub"
             try:
                 # 发送请求
                 hot_trends_data = self.make_request(url, method="POST", headers=headers, data=payload)
+                print(f"API 响应: {hot_trends_data}")
                 if isinstance(hot_trends_data, dict) and hot_trends_data.get('code') == 200:
                     data = hot_trends_data['data']
                     result = [f"热榜名称：{data['name']}，更新时间：{data['last_update']}"]
