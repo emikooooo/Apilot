@@ -566,21 +566,21 @@ ZODIAC_MAPPING = {
     }
 
 hot_trend_types = {
-    "知乎热榜": "zhihu",
-    "微博热榜": "weibo",
-    "微信热榜": "weixin",
-    "百度热榜": "baidu",
-    "今日头条": "toutiao",
-    "网易热榜": "163",
-    "新浪热榜": "xl",
-    "36氪热榜": "36k",
+    "知乎": "zhihu",
+    "微博": "weibo",
+    "微信": "weixin",
+    "百度": "baidu",
+    "今日": "toutiao",
+    "网易": "163",
+    "新浪": "xl",
+    "36氪": "36k",
     "历史上的今天": "hitory",
     "少数派": "sspai",
-    "CSDN热榜": "csdn",
-    "掘金热榜": "juejin",
-    "哔哩哔哩热榜": "bilibili",
-    "抖音热榜": "douyin",
-    "吾爱破解热榜": "52pojie",
-    "V2ex热榜": "v2ex",
-    "全球主机论坛热榜": "hostloc"
+    "CSDN": "csdn",
+    "掘金": "juejin",
+    "哔哩哔哩": "bilibili",
+    "抖音": "douyin",
+    "吾爱破解": "52pojie",
+    "V2ex": "v2ex",
+    "全球主机论坛": "hostloc"
 }
