@@ -347,7 +347,7 @@ class Apilot(Plugin):
                     # 遍历热榜列表，格式化输出
                     for item in data['list']:
                         result.append(f"标题：{item['title']}\n链接：{item['link']}\n热度：{item.get('other', '未知')}\n")
-                    return "\n".join(result)
+                        return "\n".join(result)
                 else:
                     return self.handle_error(hot_trends_data, "热榜获取失败，请检查 token 是否有误")
             except Exception as e:
