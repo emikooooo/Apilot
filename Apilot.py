@@ -124,8 +124,11 @@ class Apilot(Plugin):
             hot_trends_type = hot_trend_match.group(1).strip()  # 提取匹配的组并去掉可能的空格
             content = self.get_hot_trends(self.alapi_token, hot_trends_type)
             reply = self.create_reply(ReplyType.TEXT, content)
+            print(f"Before setting e_context['reply'], e_context: {e_context}")
             e_context["reply"] = reply
+            print(f"After setting e_context['reply'], e_context: {e_context}")
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            print(f"After setting e_context.action, e_context: {e_context}")
             return
 
 
@@ -337,6 +340,7 @@ class Apilot(Plugin):
             try:
                 # 发送请求
                 hot_trends_data = self.make_request(url, method="POST", headers=headers, data=payload)
+                print(f"API response: {hot_trends_data}")
                 if isinstance(hot_trends_data, dict) and hot_trends_data.get('code') == 200:
                     data = hot_trends_data['data']
                     result = [f"热榜名称：{data['name']}，更新时间：{data['last_update']}"]
