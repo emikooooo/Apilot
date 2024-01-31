@@ -334,7 +334,7 @@ class Apilot(Plugin):
         if hot_trends_type_en is not None:
             url = "https://v2.alapi.cn/api/tophub"
             try:
-                data = self.make_request("POST", url, data=payload, headers=headers)
+                data = self.make_request("GET", url, data=payload, headers=headers)
                 if isinstance(data, dict) and data['success'] == True:
                     output = []
                     topics = data['data']
@@ -567,14 +567,22 @@ ZODIAC_MAPPING = {
     }
 
 hot_trend_types = {
-    "微博": "wbHot",
-    "虎扑": "huPu",
-    "知乎": "zhihuHot",
-    "哔哩哔哩": "bili",
-    "36氪": "36Ke",
-    "抖音": "douyinHot",
-    "少数派": "ssPai",
-    "IT最新": "itNews",
-    "IT科技": "itInfo"
+    "知乎": "zhihu",
+    "微博": "weibo",
+    "微信": "weixin",
+    "百度": "baidu",
+    "今日": "toutiao",
+    "网易": "163",
+    "新浪": "xl",
+    "36氪": "36k",
+    "历史上的今天": "hitory",
+    "少数派": "sspai",
+    "CSDN": "csdn",
+    "掘金": "juejin",
+    "哔哩哔哩": "bilibili",
+    "抖音": "douyin",
+    "吾爱破解": "52pojie",
+    "V2ex": "v2ex",
+    "全球主机论坛": "hostloc"
 
 }
