@@ -327,6 +327,7 @@ class Apilot(Plugin):
                 return self.handle_error(e, "出错啦，稍后再试")
 
     def get_hot_trends(self, alapi_token, hot_trends_type):
+        print(f"get_hot_trends called with alapi_token: {alapi_token}, hot_trends_type: {hot_trends_type}")
         # 查找映射字典以获取API参数
         hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
         payload = f"token={alapi_token}&type={hot_trends_type_en}"
