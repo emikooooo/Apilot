@@ -329,37 +329,39 @@ class Apilot(Plugin):
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
                 
-    def get_hot_trends(self, alapi_token, hot_trends_type):
-    print(f"get_hot_trends called with alapi_token: {alapi_token}, hot_trends_type: {hot_trends_type}")
-    # 查找映射字典以获取API参数
-    hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
-    payload = f"token={alapi_token}&type={hot_trends_type_en}"
-    headers = {'Content-Type': "application/x-www-form-urlencoded"}
-    if hot_trends_type_en is not None:
-        url = BASE_URL_ALAPI + "tophub"
-        try:
-            # 发送请求
-            data = self.make_request(url, method="POST", headers=headers, data=payload)
-            print(f"API response: {data}")
-            if isinstance(data, dict) and data.get('code') == 200:
-                output = [f"热榜名称：{data['data']['name']}，更新时间：{data['data']['last_update']}"]
-                # 遍历热榜列表，格式化输出
-                for i, topic in enumerate(data['data']['list'], 1):
-                    hot = topic.get('other', '未知热度')
-                    formatted_str = f"{i}. {topic['title']} ({hot})\nURL: {topic['link']}\n"
-                    output.append(formatted_str)
-                return "\n".join(output)
-            else:
-                return self.handle_error(data, "热榜获取失败，请检查 token 是否有误")
-        except Exception as e:
-            return self.handle_error(e, "出错啦，稍后再试")
-    else:
-        supported_types = "/".join(hot_trend_types.keys())
-        final_output = (
-            f"👉 已支持的类型有：\n\n    {supported_types}\n"
-            f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
-        )
-    return final_output
+        def get_hot_trends(self, alapi_token, hot_trends_type):
+        print(f"get_hot_trends called with alapi_token: {alapi_token}, hot_trends_type: {hot_trends_type}")
+        # 查找映射字典以获取API参数
+        hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
+        payload = f"token={alapi_token}&type={hot_trends_type_en}"
+        headers = {'Content-Type': "application/x-www-form-urlencoded"}
+        if hot_trends_type_en is not None:
+            url = BASE_URL_ALAPI + "tophub"
+            try:
+                # 发送请求
+                data = self.make_request(url, method="POST", headers=headers, data=payload)
+                print(f"API response: {data}")
+                if isinstance(data, dict) and data.get('code') == 200:
+                    output = []
+                    topics = data['data']
+                    output.append(f'更新时间：{data["last_update"]}\n')
+                    # 遍历热榜列表，格式化输出
+                    for i, topic in enumerate(topics[:15], 1):
+                        hot = topic.get('hot', '无热度参数, 0')
+                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
+                        output.append(formatted_str)
+                    return "\n".join(output)
+                else:
+                    return self.handle_error(data, "热榜获取失败，请检查 token 是否有误")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
+        else:
+            supported_types = "/".join(hot_trend_types.keys())
+            final_output = (
+                f"👉 已支持的类型有：\n\n    {supported_types}\n"
+                f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
+            )
+            return final_output
 
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
         url = BASE_URL_ALAPI + "kd"
