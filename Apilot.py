@@ -338,7 +338,7 @@ class Apilot(Plugin):
                 if isinstance(data, dict) and data['success'] == True:
                     output = []
                     topics = data['data']
-                    output.append(f'热榜名称：{data["name"]}\n更新时间：{data["last_update"]}\n')
+                    output.append(f'更新时间：{data["update_time"]}\n')
                     for i, topic in enumerate(topics[:15], 1):
                         hot = topic.get('hot', '无热度参数, 0')
                         formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
