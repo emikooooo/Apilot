@@ -122,13 +122,10 @@ class Apilot(Plugin):
         hot_trend_match = re.search(r'(.{1,6})热榜$', content)
         if hot_trend_match:
             hot_trends_type = hot_trend_match.group(1).strip()  # 提取匹配的组并去掉可能的空格
-            content = self.get_hot_trends(self.alapi_token, hot_trends_type)
+            content = self.get_hot_trends(hot_trends_type)
             reply = self.create_reply(ReplyType.TEXT, content)
-            print(f"Before setting e_context['reply'], e_context: {e_context}")
             e_context["reply"] = reply
-            print(f"After setting e_context['reply'], e_context: {e_context}")
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-            print(f"After setting e_context.action, e_context: {e_context}")
             return
 
 
@@ -328,31 +325,25 @@ class Apilot(Plugin):
                     return self.handle_error(horoscope_data, "星座获取信息获取失败，请检查 token 是否有误")
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
-                
-        def get_hot_trends(self, alapi_token, hot_trends_type):
-        print(f"get_hot_trends called with alapi_token: {alapi_token}, hot_trends_type: {hot_trends_type}")
+
+    def get_hot_trends(self, hot_trends_type):
         # 查找映射字典以获取API参数
         hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
-        payload = f"token={alapi_token}&type={hot_trends_type_en}"
-        headers = {'Content-Type': "application/x-www-form-urlencoded"}
         if hot_trends_type_en is not None:
-            url = BASE_URL_ALAPI + "tophub"
+            url = BASE_URL_VVHAN + "hotlist?type=" + hot_trends_type_en
             try:
-                # 发送请求
-                data = self.make_request(url, method="POST", headers=headers, data=payload)
-                print(f"API response: {data}")
-                if isinstance(data, dict) and data.get('code') == 200:
+                data = self.make_request(url, "GET")
+                if isinstance(data, dict) and data['success'] == True:
                     output = []
                     topics = data['data']
-                    output.append(f'更新时间：{data["last_update"]}\n')
-                    # 遍历热榜列表，格式化输出
+                    output.append(f'更新时间：{data["update_time"]}\n')
                     for i, topic in enumerate(topics[:15], 1):
                         hot = topic.get('hot', '无热度参数, 0')
                         formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
                         output.append(formatted_str)
                     return "\n".join(output)
                 else:
-                    return self.handle_error(data, "热榜获取失败，请检查 token 是否有误")
+                    return self.handle_error(data, "热榜获取失败，请稍后再试")
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
         else:
@@ -574,21 +565,14 @@ ZODIAC_MAPPING = {
     }
 
 hot_trend_types = {
-    "知乎": "zhihu",
-    "微博": "weibo",
-    "微信": "weixin",
-    "百度": "baidu",
-    "今日": "toutiao",
-    "网易": "163",
-    "新浪": "xl",
-    "36氪": "36k",
-    "历史上的今天": "hitory",
-    "少数派": "sspai",
-    "CSDN": "csdn",
-    "掘金": "juejin",
-    "哔哩哔哩": "bilibili",
-    "抖音": "douyin",
-    "吾爱破解": "52pojie",
-    "V2ex": "v2ex",
-    "全球主机论坛": "hostloc"
+    "微博": "wbHot",
+    "虎扑": "huPu",
+    "知乎": "zhihuHot",
+    "哔哩哔哩": "bili",
+    "36氪": "36Ke",
+    "抖音": "douyinHot",
+    "少数派": "ssPai",
+    "IT最新": "itNews",
+    "IT科技": "itInfo"
+
 }
