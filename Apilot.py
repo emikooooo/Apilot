@@ -342,7 +342,7 @@ class Apilot(Plugin):
         currency_name_en = currency_names.get(currency_name, None)
         payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
-        if bank_name_en is not None and currency_name_en is not None:
+        if bank_name_en is not None:
             url = "https://sapi.k780.com/"
             try:
                 response = requests.request("POST", url, data=payload, headers=headers)
