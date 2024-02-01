@@ -348,9 +348,12 @@ class Apilot(Plugin):
                 response = requests.request("POST", url, data=payload, headers=headers)
                 data = response.json()
                 if data['success']:
-                    result = data['result']['lists']
-                    latest = result[0]  # 最新的数据
-                    output = [f"**{currency_name}({currency_name_en}) 汇率查询**\n**{bank_name}**\n最新更新时间：{latest['upymd']} {latest['uphis']}\n现汇买入价：{latest['se_buy']}\n现汇卖出价：{latest['se_sell']}\n\n***历史汇率*** \n| 时间 | 现汇买入价 | 现汇卖出价 | "]
+                    output = [f"**{bank_name}{currency_name}汇率查询**"]
+                    for i, item in enumerate(data['result']['lists'][:10], start=1):
+                        title = item['banknm']
+                        link = item['se_sell']
+                        output.append(f"{i}. {title} \nURL: {link}")
+                    return "\n".join(output)
                 else:
                     return self.handle_error(data, "汇率获取失败，请稍后再试")
             except Exception as e:
