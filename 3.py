@@ -351,9 +351,6 @@ class Apilot(Plugin):
                     result = data['result']['lists']
                     latest = result[0]
                     output = [f"**{bank_name}{currency_name}汇率查询**\n最新更新时间：{latest['upymd']} {latest['uphis']}\n现汇买入价：{latest['se_buy']}\n现汇卖出价：{latest['se_sell']}\n\n***历史汇率*** \n| 时间 | 现汇买入价 | 现汇卖出价 | "]
-                    target_times = ["09:00", "09:30", "10:00", "10:30"]
-                    seen_times = set()
-                    sorted_result = sorted(result, key=lambda x: x['uphis'])
                     for i, item in enumerate(data['result']['lists'][:10], start=1):
                         title = item['banknm']
                         link = item['se_sell']
