@@ -359,16 +359,6 @@ class Apilot(Plugin):
                         "\n***历史汇率***",
                         " | 时间 | 现汇买入价 | 现汇卖出价 | "
                     ]
-                    target_times = ["09:00", "09:30", "10:00", "10:30"]
-                    seen_times = set()
-                    for item in result:
-                    time = item['uphis'][:5]  # 获取小时和分钟
-                    if time in target_times and time not in seen_times:
-                        seen_times.add(time)
-                        output.append(f" | {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
-                        if len(seen_times) == len(target_times):  # 如果已经找到所有关注的时间点，则停止
-                            break
-                    return "\n".join(output)
                 else:
                     return self.handle_error(data, "汇率获取失败，请稍后再试")
             except Exception as e:
