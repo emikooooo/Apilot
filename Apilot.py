@@ -340,7 +340,7 @@ class Apilot(Plugin):
         # 查找映射字典以获取API参数
         bank_name_en = bank_names.get(bank_name, None)
         currency_name_en = currency_names.get(currency_name, None)
-        payload = f"app=finance.rate_cnyquot_history&curno=USD&bankno=ICBC&date=20240201&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
         if bank_name_en is not None:
             url = "https://sapi.k780.com/"
@@ -348,7 +348,7 @@ class Apilot(Plugin):
                 response = requests.request("POST", url, data=payload, headers=headers)
                 data = response.json()
                 if data['success']:
-                    output = [f"汇率查询结果"]
+                    output = [f"**{bank_name}{currency_name}汇率查询**"]
                     for i, item in enumerate(data['result']['lists'][:10], start=1):
                         title = item['banknm']
                         link = item['se_sell']
