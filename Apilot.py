@@ -335,13 +335,13 @@ class Apilot(Plugin):
             url = "https://v2.alapi.cn/api/tophub"
             try:
                 data = requests.request("POST", url, data=payload, headers=headers)
-                if isinstance(data, dict) and data['success'] == True:
+                if isinstance(data, dict) and data['code'] == 200:
                     output = []
                     topics = data['data']
-                    output.append(f'更新时间：{data["update_time"]}\n')
+                    output.append(f'更新时间：{data["last_update"]}\n')
                     for i, topic in enumerate(topics[:15], 1):
-                        hot = topic.get('hot', '无热度参数, 0')
-                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
+                        hot = topic.get('other', '无热度参数, 0')
+                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['link']}\n"
                         output.append(formatted_str)
                     return "\n".join(output)
                 else:
