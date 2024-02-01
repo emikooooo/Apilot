@@ -566,23 +566,6 @@ ZODIAC_MAPPING = {
         '双鱼座': 'pisces'
     }
 
-bank_no = {
-    "中行": "BOC",
-    "建行": "CCB",
-    "农行": "ABC",
-    "工行": "ICBC",
-    "光大": "CEB"
-
-    }
-
-cur_no = {
-    "美元": "USD",
-    "欧元": "EUR",
-    "英镑": "GBP"
-
-    }
-
-
 hot_trend_types = {
     "知乎": "zhihu",
     "微博": "weibo",
