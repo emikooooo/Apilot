@@ -334,7 +334,8 @@ class Apilot(Plugin):
         if hot_trends_type_en is not None:
             url = "https://v2.alapi.cn/api/tophub"
             try:
-                data = requests.request("POST", url, data=payload, headers=headers)
+                response = requests.request("POST", url, data=payload, headers=headers)
+                data = response.json()
                 if isinstance(data, dict) and data['code'] == 200:
                     output = []
                     topics = data['data']
