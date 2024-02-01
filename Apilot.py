@@ -338,8 +338,6 @@ class Apilot(Plugin):
                 data = response.json()
                 if data['code'] == 200:
                     output = [f"热榜名称：{data['data']['name']}，更新时间：{data['data']['last_update']}"]
-                    topics = data['data']
-                    output.append(f'更新时间：{data["last_update"]}\n')
                     for i, item in enumerate(data['data']['list'][:10], start=1):
                         title = item['title']
                         link = item['link']
