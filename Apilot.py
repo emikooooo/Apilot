@@ -329,7 +329,7 @@ class Apilot(Plugin):
     def get_hot_trends(self, hot_trends_type):
         # 查找映射字典以获取API参数
         hot_trends_type_en = hot_trend_types.get(hot_trends_type, None)
-        payload = "token=Pv9NigNNblo6nxCs&id=mproPpoq6O&type=weibo"
+        payload = f"token=Pv9NigNNblo6nxCs&type={hot_trends_type_en}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
         if hot_trends_type_en is not None:
             url = "https://v2.alapi.cn/api/tophub"
