@@ -354,10 +354,13 @@ class Apilot(Plugin):
                     target_times = ["09:00", "09:30", "10:00", "10:30"]
                     seen_times = set()
                     sorted_result = sorted(result, key=lambda x: x['uphis'])
-                    for i, item in enumerate(data['result']['lists'][:10], start=1):
-                        title = item['banknm']
-                        link = item['se_sell']
-                        output.append(f"{i}. {title} \nURL: {link}")
+                    for target_time in target_times:
+                        for item in sorted_result:
+                            time = item['uphis'][:5]
+                            if time >= target_time and target_time not in seen_times:
+                                seen_times.add(target_time)
+                                output.append(f" | {item['upymd']} {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
+                                break
                     return "\n".join(output)
                 else:
                     return self.handle_error(data, "汇率获取失败，请稍后再试")
