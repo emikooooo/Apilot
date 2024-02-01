@@ -348,7 +348,9 @@ class Apilot(Plugin):
                 response = requests.request("POST", url, data=payload, headers=headers)
                 data = response.json()
                 if data['success']:
-                    output = [f"**{bank_name}{currency_name}汇率查询**"]
+                    result = data['result']['lists']
+                    latest = result[0]
+                    output = [f"**{bank_name}{currency_name}汇率查询**\n最新更新时间：{latest['upymd']} {latest['uphis']}"]
                     for i, item in enumerate(data['result']['lists'][:10], start=1):
                         title = item['banknm']
                         link = item['se_sell']
