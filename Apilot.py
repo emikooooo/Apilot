@@ -350,15 +350,7 @@ class Apilot(Plugin):
                 if data['success']:
                     result = data['result']['lists']
                     latest = result[0]  # 最新的数据
-                    output = [
-                        f"**{currency_name}({currency_name_en}) 汇率查询**\n",
-                        f"**{bank_name}**\n",
-                        f"最新更新时间：{latest['upymd']} {latest['uphis']}\n",
-                        f"现汇买入价：{latest['se_buy']}\n",
-                        f"现汇卖出价：{latest['se_sell']}\n",
-                        "\n***历史汇率***",
-                        " | 时间 | 现汇买入价 | 现汇卖出价 | "
-                    ]
+                    output = [f"**{currency_name}({currency_name_en}) 汇率查询**\n**{bank_name}**\n最新更新时间：{latest['upymd']} {latest['uphis']}\n现汇买入价：{latest['se_buy']}\n现汇卖出价：{latest['se_sell']}\n\n***历史汇率*** \n| 时间 | 现汇买入价 | 现汇卖出价 | "]
                 else:
                     return self.handle_error(data, "汇率获取失败，请稍后再试")
             except Exception as e:
