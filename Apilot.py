@@ -626,6 +626,11 @@ bank_names = {
 currency_names = {
     "美元": "USD",
     "欧元": "EUR",
+    "港币": "HKD",
+    "澳元": "AUD",
+    "法郎": "CHF",
+    "新加坡元": "SGD",
+    "日元": "JPY",
     "英镑": "GBP"
 
     }
