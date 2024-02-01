@@ -119,6 +119,16 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        rate_match = re.search(r'(.{2})(.{2})汇率$', content)
+        if rate_match:
+            bank_name = rate_match.group(1).strip()  # 提取银行名称并去掉可能的空格
+            currency_name = rate_match.group(2).strip()  # 提取货币名称并去掉可能的空格
+            content = self.get_exchange_rate(bank_name, currency_name)
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         hot_trend_match = re.search(r'(.{1,6})热榜$', content)
         if hot_trend_match:
             hot_trends_type = hot_trend_match.group(1).strip()  # 提取匹配的组并去掉可能的空格
@@ -325,6 +335,36 @@ class Apilot(Plugin):
                     return self.handle_error(horoscope_data, "星座获取信息获取失败，请检查 token 是否有误")
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
+
+    def get_exchange_rate(self, bank_name, currency_name):
+        # 查找映射字典以获取API参数
+        bank_name_en = bank_names.get(bank_name, None)
+        currency_name_en = currency_names.get(currency_name, None)
+        payload = f"app=finance.rate_cnyquot_history&curno=USD&bankno=ICBC&date=20240201&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        headers = {'Content-Type': "application/x-www-form-urlencoded"}
+        if bank_name_en is not None:
+            url = "https://sapi.k780.com/"
+            try:
+                response = requests.request("POST", url, data=payload, headers=headers)
+                data = response.json()
+                if data['success'] == 1:
+                    output = [f"汇率查询结果"]
+                    for i, item in enumerate(data['result']['lists'][:10], start=1):
+                        title = item['banknm']
+                        link = item['se_sell']
+                        output.append(f"{i}. {title} \nURL: {link}")
+                    return "\n".join(output)
+                else:
+                    return self.handle_error(data, "热榜获取失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
+        else:
+            supported_bank_names = "/".join(bank_names.keys())
+            final_output = (
+                f"👉 已支持的类型有：\n\n    {supported_bank_names}\n"
+                f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
+            )
+            return final_output
 
     def get_hot_trends(self, hot_trends_type):
         # 查找映射字典以获取API参数
@@ -566,7 +606,7 @@ ZODIAC_MAPPING = {
         '双鱼座': 'pisces'
     }
 
-bank_no = {
+bank_names = {
     "中行": "BOC",
     "建行": "CCB",
     "农行": "ABC",
@@ -575,7 +615,7 @@ bank_no = {
 
     }
 
-cur_no = {
+currency_names = {
     "美元": "USD",
     "欧元": "EUR",
     "英镑": "GBP"
