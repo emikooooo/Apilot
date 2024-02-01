@@ -347,7 +347,7 @@ class Apilot(Plugin):
             try:
                 response = requests.request("POST", url, data=payload, headers=headers)
                 data = response.json()
-                if data['success'] == 1:
+                if data['success']:
                     output = [f"汇率查询结果"]
                     for i, item in enumerate(data['result']['lists'][:10], start=1):
                         title = item['banknm']
@@ -355,14 +355,14 @@ class Apilot(Plugin):
                         output.append(f"{i}. {title} \nURL: {link}")
                     return "\n".join(output)
                 else:
-                    return self.handle_error(data, "热榜获取失败，请稍后再试")
+                    return self.handle_error(data, "汇率获取失败，请稍后再试")
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
         else:
             supported_bank_names = "/".join(bank_names.keys())
             final_output = (
                 f"👉 已支持的类型有：\n\n    {supported_bank_names}\n"
-                f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
+                f"\n📝 请按照以下格式发送：\n    银行+币种+汇率  例如：中行美元汇率"
             )
             return final_output
 
