@@ -336,14 +336,15 @@ class Apilot(Plugin):
             try:
                 response = requests.request("POST", url, data=payload, headers=headers)
                 data = response.json()
-                if isinstance(data, dict) and data['code'] == 200:
-                    output = []
+                if data['code'] == 200:
+                    output = [f"热榜名称：{data['data']['name']}，更新时间：{data['data']['last_update']}"]
                     topics = data['data']
                     output.append(f'更新时间：{data["last_update"]}\n')
-                    for i, topic in enumerate(topics[:15], 1):
-                        hot = topic.get('other', '无热度参数, 0')
-                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['link']}\n"
-                        output.append(formatted_str)
+                    for i, item in enumerate(data['data']['list'][:10], start=1):
+                        title = item['title']
+                        link = item['link']
+                        other = item.get('other', '未知热度')  # 使用get以避免KeyError
+                        output.append(f"{i}. {title} ({other})\nURL: {link}")
                     return "\n".join(output)
                 else:
                     return self.handle_error(data, "热榜获取失败，请稍后再试")
