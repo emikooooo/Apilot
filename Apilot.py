@@ -342,17 +342,32 @@ class Apilot(Plugin):
         currency_name_en = currency_names.get(currency_name, None)
         payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
-        if bank_name_en is not None:
+        if bank_name_en is not None and currency_name_en is not None:
             url = "https://sapi.k780.com/"
             try:
                 response = requests.request("POST", url, data=payload, headers=headers)
                 data = response.json()
                 if data['success']:
-                    output = [f"**{bank_name}{currency_name}汇率查询**"]
-                    for i, item in enumerate(data['result']['lists'][:10], start=1):
-                        title = item['banknm']
-                        link = item['se_sell']
-                        output.append(f"{i}. {title} \nURL: {link}")
+                    result = data['result']['lists']
+                    latest = result[0]  # 最新的数据
+                    output = [
+                        f"**{currency_name}({currency_name_en}) 汇率查询**\n",
+                        f"**{bank_name}**\n",
+                        f"最新更新时间：{latest['upymd']} {latest['uphis']}\n",
+                        f"现汇买入价：{latest['se_buy']}\n",
+                        f"现汇卖出价：{latest['se_sell']}\n",
+                        "\n***历史汇率***",
+                        " | 时间 | 现汇买入价 | 现汇卖出价 | "
+                    ]
+                    target_times = ["09:00", "09:30", "10:00", "10:30"]
+                    seen_times = set()
+                    for item in result:
+                    time = item['uphis'][:5]  # 获取小时和分钟
+                    if time in target_times and time not in seen_times:
+                        seen_times.add(time)
+                        output.append(f" | {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
+                        if len(seen_times) == len(target_times):  # 如果已经找到所有关注的时间点，则停止
+                            break
                     return "\n".join(output)
                 else:
                     return self.handle_error(data, "汇率获取失败，请稍后再试")
