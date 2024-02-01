@@ -359,7 +359,7 @@ class Apilot(Plugin):
                             time = item['uphis'][:5]
                             if time >= target_time and target_time not in seen_times:
                                 seen_times.add(target_time)
-                                output.append(f" | {item['upymd']} {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
+                                output.append(f" | {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
                     return "\n".join(output)
                 else:
