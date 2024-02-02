@@ -82,7 +82,7 @@ class Apilot(Plugin):
             return
 
         if content == "今日热点":
-            content = self.get_hot_trends_A(bank_name, currency_name)
+            content = self.get_hot_trends_A()
             reply = self.create_reply(ReplyType.TEXT, content)
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
