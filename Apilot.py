@@ -368,8 +368,10 @@ class Apilot(Plugin):
                 return self.handle_error(e, "出错啦，稍后再试")
         else:
             supported_bank_names = "/".join(bank_names.keys())
+            supported_currency_names = "/".join(currency_names.keys())
             final_output = (
-                f"👉 已支持的类型有：\n\n    {supported_bank_names}\n"
+                f"👉 已支持的银行有：\n\n    {supported_bank_names}\n"
+                f"👉 已支持的币种有：\n\n    {supported_currency_names}\n"
                 f"\n📝 请按照以下格式发送：\n    银行+币种+汇率  例如：中行美元汇率"
             )
             return final_output
