@@ -138,6 +138,14 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        hot_trend_match_d = re.search(r'(.{1,6})热点$', content)
+        if hot_trend_match_d:
+            hot_trends_type_d = hot_trend_match_d.group(1).strip()  # 提取匹配的组并去掉可能的空格
+            content = self.get_hot_trends_d(hot_trends_type_d)
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
 
         # 天气查询
         weather_match = re.match(r'^(?:(.{2,7}?)(?:市|县|区|镇)?|(\d{7,9}))(?:的)?天气$', content)
@@ -406,6 +414,34 @@ class Apilot(Plugin):
             )
             return final_output
 
+    def get_hot_trends_d(self, hot_trends_type_d):
+        # 查找映射字典以获取API参数
+        hot_trends_type_en_d = hot_trend_types_d.get(hot_trends_type_d, None)
+        if hot_trends_type_en_d is not None:
+            url = BASE_URL_VVHAN + "hotlist?type=" + hot_trends_type_en_d
+            try:
+                data = self.make_request(url, "GET")
+                if isinstance(data, dict) and data['success'] == True:
+                    output = []
+                    topics = data['data']
+                    output.append(f'更新时间：{data["update_time"]}\n')
+                    for i, topic in enumerate(topics[:15], 1):
+                        hot = topic.get('hot', '无热度参数, 0')
+                        formatted_str = f"{i}. {topic['title']} ({hot} 浏览)\nURL: {topic['url']}\n"
+                        output.append(formatted_str)
+                    return "\n".join(output)
+                else:
+                    return self.handle_error(data, "热榜获取失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
+        else:
+            supported_types = "/".join(hot_trend_types_d.keys())
+            final_output = (
+                f"👉 已支持的类型有：\n\n    {supported_types}\n"
+                f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
+            )
+            return final_output
+
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
         url = BASE_URL_ALAPI + "kd"
         payload = f"token={alapi_token}&number={tracking_number}&com={com}&order={order}"
@@ -637,6 +673,18 @@ currency_names = {
 
     }
 
+hot_trend_types_d = {
+    "微博": "wbHot",
+    "虎扑": "huPu",
+    "知乎": "zhihuHot",
+    "哔哩哔哩": "bili",
+    "36氪": "36Ke",
+    "抖音": "douyinHot",
+    "少数派": "ssPai",
+    "IT最新": "itNews",
+    "IT科技": "itInfo"
+
+}
 
 hot_trend_types = {
     "知乎": "zhihu",
