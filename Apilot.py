@@ -2,6 +2,7 @@ import plugins
 import requests
 import re
 import json
+import time
 from urllib.parse import urlparse
 from bridge.context import ContextType
 from bridge.reply import Reply, ReplyType
