@@ -280,7 +280,7 @@ class Apilot(Plugin):
                     formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
                 else:
                     formatted_time = '无时间信息'
-                formatted_str = f"{i}. {title} | {views}\n{url}\n {formatted_time}\n"
+                formatted_str = f"{i}. {title}  ({views})\n{url}\n更新时间: {formatted_time}\n"
                 output.append(formatted_str)
             return "\n".join(output)
         else:
