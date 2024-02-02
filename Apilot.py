@@ -81,6 +81,13 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        if content == "今日热点":
+            content = self.get_hot_trends_A(bank_name, currency_name)
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         if content.startswith("快递"):
             # Extract the part after "快递"
             tracking_number = content[2:].strip()
@@ -254,6 +261,29 @@ class Apilot(Plugin):
                     return "周末无需摸鱼，愉快玩耍吧"
             else:
                 return "暂无可用“摸鱼”服务，认真上班"
+
+    def get_hot_trends_A(self):
+        url = "https://open.tophub.today/hot"
+        data = self.make_request(url, "GET")
+        if isinstance(data, dict) and 'data' in data:
+            output = []
+            items = data['data']['items']
+            output.append(f'***今日热点***\n')
+            for i, item in enumerate(items[:15], 1):
+                title = item.get('title', '无标题')
+                url = item.get('url', '无URL')
+                views = item.get('views', '无浏览量')
+                timestamp = int(item.get('time', 0))
+                if timestamp > 0:
+                    time_struct = time.localtime(timestamp)
+                    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
+                else:
+                    formatted_time = '无时间信息'
+                formatted_str = f"{i}. {title} Views: {views}\nURL: {url}\n\nTime: {formatted_time}\n"
+                output.append(formatted_str)
+            return "\n".join(output)
+        else:
+            return self.handle_error(data, "热榜获取失败，请稍后再试")
 
     def get_moyu_calendar_video(self):
         url = "https://dayu.qqsuu.cn/moyuribaoshipin/apis.php?type=json"
