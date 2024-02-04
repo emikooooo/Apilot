@@ -127,11 +127,12 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
-        rate_match = re.search(r'(.{2})(.{2})汇率$', content)
+        rate_match = re.search(r'(.{2})(.{2})汇率(\d{8})?$', content)
         if rate_match:
             bank_name = rate_match.group(1).strip()  # 提取银行名称并去掉可能的空格
             currency_name = rate_match.group(2).strip()  # 提取货币名称并去掉可能的空格
-            content = self.get_exchange_rate(bank_name, currency_name)
+            date = rate_match.group(3)  # 提取日期
+            content = self.get_exchange_rate(bank_name, currency_name, date)
             reply = self.create_reply(ReplyType.TEXT, content)
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -375,11 +376,13 @@ class Apilot(Plugin):
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
 
-    def get_exchange_rate(self, bank_name, currency_name):
+    def get_exchange_rate(self, bank_name, currency_name, date):
         # 查找映射字典以获取API参数
         bank_name_en = bank_names.get(bank_name, None)
         currency_name_en = currency_names.get(currency_name, None)
         payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        if date:
+            payload += f"&date={date}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
         if bank_name_en is not None:
             url = "https://sapi.k780.com/"
@@ -412,6 +415,7 @@ class Apilot(Plugin):
                 f"👉 已支持的银行有：\n\n    {supported_bank_names}\n"
                 f"👉 已支持的币种有：\n\n    {supported_currency_names}\n"
                 f"\n📝 请按照以下格式发送：\n    银行+币种+汇率  例如：中行美元汇率"
+                f"\n📝 历史查询末尾加日期：\n    例如：中行美元汇率20240113"
             )
             return final_output
 
