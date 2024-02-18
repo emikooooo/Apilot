@@ -162,8 +162,7 @@ class Apilot(Plugin):
             if video_url_match:
                 video_url = self.extract_video_url(video_url_match.group(1))
                 if video_url:
-                    content_original = self.get_video_summary(video_url)
-                    content = content_original.split("## 问题")[0].replace("## 摘要\n", "📌总结：\n").replace("- ", "")
+                    content = self.get_video_summary(video_url)
                     reply = self.create_reply(ReplyType.TEXT, content)
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -499,9 +498,27 @@ class Apilot(Plugin):
     def get_video_summary(self, video_url):
         # 查找映射字典以获取API参数
         if video_url is not None:
-            url = "https://bibigpt.co/api/open/yeiP5PHcs26a?url=" + video_url
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            payload_params = {
+                "url": video_url,
+                "includeDetail": False,
+                "promptConfig": {
+                    "showEmoji": true,
+                    "showTimestamp": false,
+                    "outlineLevel": 1,
+                    "sentenceNumber": 5,
+                    "detailLevel": 700,
+                    "outputLanguage": "zh-CN"
+                }
+            }
+            payload = json.dumps(payload_params)
             try:
-                data = self.make_request(url, "GET")
+                api_url = "https://bibigpt.co/api/open/yeiP5PHcs26a"
+                response = requests.request("POST",api_url, headers=headers, data=payload)
+                response.raise_for_status()
+                data = json.loads(response.text)
                 if isinstance(data, dict) and data['success'] == True:
                     return f'：{data["summary"]}\n'
                 else:
