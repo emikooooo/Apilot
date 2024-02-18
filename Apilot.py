@@ -175,7 +175,7 @@ class Apilot(Plugin):
             if video_url_match:
                 video_url = self.extract_video_url(video_url_match.group(1))
                 if video_url:
-                    content_original = self.get_video_subtital(video_url)
+                    content = self.get_video_subtital(video_url)
                     reply = self.create_reply(ReplyType.TEXT, content)
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -572,7 +572,16 @@ class Apilot(Plugin):
                 response.raise_for_status()
                 data = json.loads(response.text)
                 if isinstance(data, dict) and data['success'] == True:
-                    return f'：{data["summary"]}\n'
+                    summary_start_index = data['summary'].find('## 摘要\n')
+                    summary_end_index = data['summary'].find('\n\n## 亮点')
+                    summary_content = data['summary'][summary_start_index:summary_end_index]
+                    formatted_summary = f'## 摘要\n{summary_content}\n'
+                    result = formatted_summary
+                    subtitles = []
+                    for subtitle in data['detail']['subtitlesArray']:
+                        subtitles.append(f"[{subtitle['startTime']}] {subtitle['text']}")
+                    result += '\n'.join(subtitles)
+                    return result
                 else:
                     return self.handle_error(data, "视频总结失败，请稍后再试")
             except Exception as e:
