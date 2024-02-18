@@ -163,7 +163,7 @@ class Apilot(Plugin):
                 video_url = self.extract_video_url(video_url_match.group(1))
                 if video_url:
                     content_original = self.get_video_summary(video_url)
-                    content = content_original.split("## 问题")[0].replace("## 摘要\n", "📌总结：").replace("## 亮点\n", "## 要点").replace("- ", "")
+                    content = content_original.split("## 问题")[0].replace("## 摘要\n", "📌总结：\n").replace("- ", "")
                     reply = self.create_reply(ReplyType.TEXT, content)
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -503,7 +503,7 @@ class Apilot(Plugin):
             try:
                 data = self.make_request(url, "GET")
                 if isinstance(data, dict) and data['success'] == True:
-                    return f'视频总结：{data["summary"]}\n'
+                    return f'：{data["summary"]}\n'
                 else:
                     return self.handle_error(data, "视频总结失败，请稍后再试")
             except Exception as e:
