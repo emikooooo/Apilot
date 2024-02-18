@@ -162,7 +162,8 @@ class Apilot(Plugin):
             if video_url_match:
                 video_url = self.extract_video_url(video_url_match.group(1))
                 if video_url:
-                    content = self.get_video_summary(video_url)
+                    content_original = self.get_video_summary(video_url)
+                    content = content_original.split("详细版（支持对话追问）")[0].replace("## 摘要\n", "📌总结：\n").replace("## 精华\n", "## 亮点\n").replace("- ", "")
                     reply = self.create_reply(ReplyType.TEXT, content)
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -503,13 +504,16 @@ class Apilot(Plugin):
             }
             payload_params = {
                 "url": video_url,
-                "includeDetail": True,
+                "includeDetail": False,
+                "limitation": {
+                    "maxDuration": 900
+                }
                 "promptConfig": {
                     "showEmoji": True,
                     "showTimestamp": True,
-                    "outlineLevel": 1,
-                    "sentenceNumber": 5,
-                    "detailLevel": 700,
+                    "outlineLevel": 2,
+                    "sentenceNumber": 6,
+                    "detailLevel": 900,
                     "outputLanguage": "zh-CN"
                 }
             }
