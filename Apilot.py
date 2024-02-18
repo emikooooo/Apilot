@@ -525,18 +525,21 @@ class Apilot(Plugin):
                 data = json.loads(response.text)
                 if isinstance(data, dict) and data['success'] == True:
                     if trigger == "视频总结":
-                        return f'：{data["summary"]}\n'
+                        summary = data["summary"].split("详细版（支持对话追问）")[0].replace("## 摘要\n", "📌总结：\n")
+                        return f'{summary}'
                     elif trigger == "视频数据":
                         return f'：{data}\n'
                     elif trigger == "视频字幕":
-                        summary_start_index = data['summary'].find('## 摘要')
-                        summary_end_index = data['summary'].find('## 亮点')
-                        summary_content = data['summary'][summary_start_index:summary_end_index]
-                        formatted_summary = f'## 摘要\n{summary_content}\n'
+                        summary_content = data['detail']['title']
+                        formatted_summary = f'📌字幕：\n{summary_content}\n'
                         result = formatted_summary
                         subtitles = []
                         for subtitle in data['detail']['subtitlesArray']:
-                            subtitles.append(f"[{subtitle['startTime']}] {subtitle['text']}")
+                            start_time = int(subtitle['startTime'])
+                            minutes = start_time // 60
+                            seconds = start_time % 60
+                            formatted_start_time = f"{minutes}:{seconds:02d}" if minutes > 0 else f"{seconds:02d}"
+                            subtitles.append(f"[{formatted_start_time}] {subtitle['text']}")
                         result += '\n'.join(subtitles)
                         return result
                 else:
