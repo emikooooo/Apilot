@@ -156,30 +156,18 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
-        video_summary_trigger = "视频总结"
-        if video_summary_trigger in content:
-            video_url_match = re.search(r'视频总结(.*?)$', content)
-            if video_url_match:
-                video_url = self.extract_video_url(video_url_match.group(1))
-                if video_url:
-                    content_original = self.get_video_summary(video_url)
-                    content = content_original.split("详细版（支持对话追问）")[0].replace("## 摘要\n", "📌总结：\n").replace("## 精华\n", "## 亮点\n").replace("- ", "")
-                    reply = self.create_reply(ReplyType.TEXT, content)
-                    e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                    return
-
-        video_subtitle_trigger = "视频字幕"
-        if video_subtitle_trigger in content:
-            video_url_match = re.search(r'视频字幕(.*?)$', content)
-            if video_url_match:
-                video_url = self.extract_video_url(video_url_match.group(1))
-                if video_url:
-                    content = self.get_video_subtital(video_url)
-                    reply = self.create_reply(ReplyType.TEXT, content)
-                    e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                    return
+        video_trigger = ["视频字幕", "视频总结"]
+        for trigger in video_trigger:
+            if trigger in content:
+                video_url_match = re.search(f'{trigger}(.*?)$', content)
+                if video_url_match:
+                    video_url = self.extract_video_url(video_url_match.group(1))
+                    if video_url:
+                        content = self.get_video_summary(video_url, trigger)
+                        reply = self.create_reply(ReplyType.TEXT, content)
+                        e_context["reply"] = reply
+                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                        return
 
         # 天气查询
         weather_match = re.match(r'^(?:(.{2,7}?)(?:市|县|区|镇)?|(\d{7,9}))(?:的)?天气$', content)
@@ -508,42 +496,7 @@ class Apilot(Plugin):
             )
             return final_output
 
-    def get_video_summary(self, video_url):
-        # 查找映射字典以获取API参数
-        if video_url is not None:
-            headers = {
-                'Content-Type': 'application/json'
-            }
-            payload_params = {
-                "url": video_url,
-                "includeDetail": False,
-                "limitation": {
-                    "maxDuration": 900
-                },
-                "promptConfig": {
-                    "showEmoji": True,
-                    "showTimestamp": True,
-                    "outlineLevel": 1,
-                    "sentenceNumber": 5,
-                    "detailLevel": 700,
-                    "isRefresh": True,
-                    "outputLanguage": "zh-CN"
-                }
-            }
-            payload = json.dumps(payload_params)
-            try:
-                api_url = "https://bibigpt.co/api/open/yeiP5PHcs26a"
-                response = requests.request("POST",api_url, headers=headers, data=payload)
-                response.raise_for_status()
-                data = json.loads(response.text)
-                if isinstance(data, dict) and data['success'] == True:
-                    return f'：{data["summary"]}\n'
-                else:
-                    return self.handle_error(data, "视频总结失败，请稍后再试")
-            except Exception as e:
-                return self.handle_error(e, "视频总结出错啦，稍后再试")
-
-    def get_video_subtital(self, video_url):
+    def get_video_summary(self, video_url, trigger):
         # 查找映射字典以获取API参数
         if video_url is not None:
             headers = {
@@ -559,9 +512,8 @@ class Apilot(Plugin):
                     "showEmoji": True,
                     "showTimestamp": True,
                     "outlineLevel": 1,
-                    "sentenceNumber": 5,
+                    "sentenceNumber": 6,
                     "detailLevel": 700,
-                    "isRefresh": True,
                     "outputLanguage": "zh-CN"
                 }
             }
@@ -572,16 +524,19 @@ class Apilot(Plugin):
                 response.raise_for_status()
                 data = json.loads(response.text)
                 if isinstance(data, dict) and data['success'] == True:
-                    summary_start_index = data['summary'].find('## 摘要\n')
-                    summary_end_index = data['summary'].find('\n\n## 亮点')
-                    summary_content = data['summary'][summary_start_index:summary_end_index]
-                    formatted_summary = f'## 摘要\n{summary_content}\n'
-                    result = formatted_summary
-                    subtitles = []
-                    for subtitle in data['detail']['subtitlesArray']:
-                        subtitles.append(f"[{subtitle['startTime']}] {subtitle['text']}")
-                    result += '\n'.join(subtitles)
-                    return result
+                    if trigger == "视频总结":
+                        return f'：{data["summary"]}\n'
+                    elif trigger == "视频字幕":
+                        summary_start_index = data['summary'].find('## 摘要')
+                        summary_end_index = data['summary'].find('## 亮点')
+                        summary_content = data['summary'][summary_start_index:summary_end_index]
+                        formatted_summary = f'## 摘要\n{summary_content}\n'
+                        result = formatted_summary
+                        subtitles = []
+                        for subtitle in data['detail']['subtitlesArray']:
+                            subtitles.append(f"[{subtitle['startTime']}] {subtitle['text']}")
+                        result += '\n'.join(subtitles)
+                        return result
                 else:
                     return self.handle_error(data, "视频总结失败，请稍后再试")
             except Exception as e:
