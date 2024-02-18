@@ -506,8 +506,8 @@ class Apilot(Plugin):
                 "url": video_url,
                 "includeDetail": False,
                 "limitation": {
-                    "maxDuration": 900,
-                }
+                    "maxDuration": 900
+                },
                 "promptConfig": {
                     "showEmoji": True,
                     "showTimestamp": True,
