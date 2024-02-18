@@ -503,10 +503,10 @@ class Apilot(Plugin):
             }
             payload_params = {
                 "url": video_url,
-                "includeDetail": False,
+                "includeDetail": Ture,
                 "promptConfig": {
                     "showEmoji": True,
-                    "showTimestamp": False,
+                    "showTimestamp": True,
                     "outlineLevel": 1,
                     "sentenceNumber": 5,
                     "detailLevel": 700,
