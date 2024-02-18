@@ -505,8 +505,8 @@ class Apilot(Plugin):
                 "url": video_url,
                 "includeDetail": False,
                 "promptConfig": {
-                    "showEmoji": true,
-                    "showTimestamp": false,
+                    "showEmoji": True,
+                    "showTimestamp": False,
                     "outlineLevel": 1,
                     "sentenceNumber": 5,
                     "detailLevel": 700,
