@@ -507,7 +507,7 @@ class Apilot(Plugin):
                 "includeDetail": False,
                 "limitation": {
                     "maxDuration": 900,
-                },
+                }
                 "promptConfig": {
                     "showEmoji": True,
                     "showTimestamp": True,
