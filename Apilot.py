@@ -156,6 +156,18 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        video_summary_trigger = "视频总结"
+        if video_summary_trigger in content:
+            video_url_match = re.search(r'视频总结(.*?)$', content)
+            if video_url_match:
+                video_url = self.extract_video_url(video_url_match.group(1))
+                if video_url:
+                    content = self.get_video_summary(video_url)
+                    reply = self.create_reply(ReplyType.TEXT, summary)
+                    e_context["reply"] = reply
+                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                    return
+
         # 天气查询
         weather_match = re.match(r'^(?:(.{2,7}?)(?:市|县|区|镇)?|(\d{7,9}))(?:的)?天气$', content)
         if weather_match:
@@ -170,6 +182,12 @@ class Apilot(Plugin):
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
+
+    def extract_video_url(self, text):
+        url_match = re.search(r'(http[s]?://\S+)', text)
+        if url_match:
+            return url_match.group(1)
+        return None
 
     def get_help_text(self, verbose=False, **kwargs):
         short_help_text = " 发送特定指令以获取早报、热榜、查询天气、星座运势、快递信息等！"
@@ -476,6 +494,19 @@ class Apilot(Plugin):
                 f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
             )
             return final_output
+
+    def get_video_sum(self, video_url):
+        # 查找映射字典以获取API参数
+        if video_url is not None:
+            url = "https://bibigpt.co/api/open/yeiP5PHcs26a?url=" + video_url
+            try:
+                data = self.make_request(url, "GET")
+                if isinstance(data, dict) and data['success'] == True:
+                    return f'视频总结：{data["summary"]}\n'
+                else:
+                    return self.handle_error(data, "视频总结失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "视频总结出错啦，稍后再试")
 
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
         url = BASE_URL_ALAPI + "kd"
