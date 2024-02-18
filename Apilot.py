@@ -163,7 +163,7 @@ class Apilot(Plugin):
                 video_url = self.extract_video_url(video_url_match.group(1))
                 if video_url:
                     content = self.get_video_summary(video_url)
-                    reply = self.create_reply(ReplyType.TEXT, summary)
+                    reply = self.create_reply(ReplyType.TEXT, content)
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
