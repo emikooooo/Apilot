@@ -504,16 +504,17 @@ class Apilot(Plugin):
             }
             payload_params = {
                 "url": video_url,
-                "includeDetail": False,
+                "includeDetail": True,
                 "limitation": {
                     "maxDuration": 900
                 },
                 "promptConfig": {
                     "showEmoji": True,
                     "showTimestamp": True,
-                    "outlineLevel": 2,
-                    "sentenceNumber": 6,
-                    "detailLevel": 900,
+                    "outlineLevel": 1,
+                    "sentenceNumber": 5,
+                    "detailLevel": 700,
+                    "isRefresh": True,
                     "outputLanguage": "zh-CN"
                 }
             }
@@ -524,7 +525,7 @@ class Apilot(Plugin):
                 response.raise_for_status()
                 data = json.loads(response.text)
                 if isinstance(data, dict) and data['success'] == True:
-                    return f'：{data["summary"]}\n'
+                    return f'：{data}'
                 else:
                     return self.handle_error(data, "视频总结失败，请稍后再试")
             except Exception as e:
