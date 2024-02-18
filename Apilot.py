@@ -495,7 +495,7 @@ class Apilot(Plugin):
             )
             return final_output
 
-    def get_video_sum(self, video_url):
+    def get_video_summary(self, video_url):
         # 查找映射字典以获取API参数
         if video_url is not None:
             url = "https://bibigpt.co/api/open/yeiP5PHcs26a?url=" + video_url
