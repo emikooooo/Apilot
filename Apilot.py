@@ -156,7 +156,7 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
-        video_trigger = ["视频字幕", "视频总结"]
+        video_trigger = ["视频字幕", "视频总结", "视频数据"]
         for trigger in video_trigger:
             if trigger in content:
                 video_url_match = re.search(f'{trigger}(.*?)$', content)
@@ -511,9 +511,9 @@ class Apilot(Plugin):
                 "promptConfig": {
                     "showEmoji": True,
                     "showTimestamp": True,
-                    "outlineLevel": 1,
-                    "sentenceNumber": 6,
-                    "detailLevel": 700,
+                    #"outlineLevel": 1,
+                    #"sentenceNumber": 6,
+                    #"detailLevel": 700,
                     "outputLanguage": "zh-CN"
                 }
             }
@@ -526,6 +526,8 @@ class Apilot(Plugin):
                 if isinstance(data, dict) and data['success'] == True:
                     if trigger == "视频总结":
                         return f'：{data["summary"]}\n'
+                    elif trigger == "视频数据":
+                        return f'：{data}\n'
                     elif trigger == "视频字幕":
                         summary_start_index = data['summary'].find('## 摘要')
                         summary_end_index = data['summary'].find('## 亮点')
