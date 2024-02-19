@@ -169,6 +169,19 @@ class Apilot(Plugin):
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         return
 
+        video_download = ["视频下载"]
+        if video_download in content:
+            video_url_match = re.search(f'{video_download}(.*?)$', content)
+            if video_url_match:
+                video_url = self.extract_video_url(video_url_match.group(1))
+                if video_url:
+                        content = self.get_video_download(video_url)
+                        reply = self.create_reply(ReplyType.VIDEO_URL, content)
+                        e_context["reply"] = reply
+                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                        return
+            
+
         # 天气查询
         weather_match = re.match(r'^(?:(.{2,7}?)(?:市|县|区|镇)?|(\d{7,9}))(?:的)?天气$', content)
         if weather_match:
@@ -546,6 +559,33 @@ class Apilot(Plugin):
                     return self.handle_error(data, "视频总结失败，请稍后再试")
             except Exception as e:
                 return self.handle_error(e, "视频总结出错啦，稍后再试")
+
+    def get_video_download(self, video_url):
+        api_url = "https://v2.alapi.cn/api/video/url"
+        payload = f"token=Pv9NigNNblo6nxCs&url={video_url}"
+        headers = {'Content-Type': "application/x-www-form-urlencoded"}
+        # 重试 10 次
+        for _ in range(10):
+            try:
+                response = requests.request("POST", api_url, data=payload, headers=headers)
+                response.raise_for_status()  # 如果状态码是 4xx 或 5xx，抛出 HTTPError 异常
+            except requests.exceptions.HTTPError as errh:
+                print("HTTP Error:", errh)
+            except requests.exceptions.ConnectionError as errc:
+                print("Error Connecting:", errc)
+            except requests.exceptions.Timeout as errt:
+                print("Timeout Error:", errt)
+            except requests.exceptions.RequestException as err:
+                print("Something went wrong", err)
+
+            if response.status_code == 200:
+                response_json = response.json()
+                if 'data' in response_json and response_json['data'] is not None and 'video_url' in response_json['data']:
+                    return response_json['data']['video_url']
+
+            # 如果响应码不是 200，等待 2 秒然后重试
+            time.sleep(2)
+        return None
 
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
         url = BASE_URL_ALAPI + "kd"
