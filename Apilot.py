@@ -525,7 +525,7 @@ class Apilot(Plugin):
                 data = json.loads(response.text)
                 if isinstance(data, dict) and data['success'] == True:
                     if trigger == "视频总结":
-                        summary = data["summary"].split("详细版（支持对话追问）")[0].replace("## 摘要\n", "📌总结：\n")
+                        summary = data["summary"].split("详细版（支持对话追问）")[0].replace("## 摘要\n", "📌总结：\n").replace("## 总结\n", "📌总结：\n")
                         return f'{summary}'
                     elif trigger == "视频数据":
                         return f'：{data}\n'
