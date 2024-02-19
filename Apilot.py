@@ -169,7 +169,7 @@ class Apilot(Plugin):
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         return
 
-        video_download = ["视频下载"]
+        video_download = ["视频下载", "视频解析"]
         if video_download in content:
             video_url_match = re.search(f'{video_download}(.*?)$', content)
             if video_url_match:
