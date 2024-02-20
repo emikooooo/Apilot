@@ -500,14 +500,14 @@ class Apilot(Plugin):
                         output.append(formatted_str)
                     return "\n".join(output)
                 else:
-                    return self.handle_error(data, "热榜获取失败，请稍后再试")
+                    return self.handle_error(data, "热点获取失败，请稍后再试")
             except Exception as e:
                 return self.handle_error(e, "出错啦，稍后再试")
         else:
             supported_types = "/".join(hot_trend_types_d.keys())
             final_output = (
                 f"👉 已支持的类型有：\n\n    {supported_types}\n"
-                f"\n📝 请按照以下格式发送：\n    类型+热榜  例如：微博热榜"
+                f"\n📝 请按照以下格式发送：\n    类型+热点  例如：微博热点"
             )
             return final_output
 
