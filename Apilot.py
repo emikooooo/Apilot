@@ -88,6 +88,22 @@ class Apilot(Plugin):
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
+        
+        if content.startswith("搜人"):
+            starname = content[2:].strip()
+            content = self.get_starinfo(starname)
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
+        if content.startswith("搜图"):
+            starname = content[2:].strip()
+            content = self.get_starpic(starname)
+            reply = self.create_reply(ReplyType.IMAGE_URL, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
 
         if content.startswith("快递"):
             # Extract the part after "快递"
@@ -508,6 +524,65 @@ class Apilot(Plugin):
             final_output = (
                 f"👉 已支持的类型有：\n\n    {supported_types}\n"
                 f"\n📝 请按照以下格式发送：\n    类型+热点  例如：微博热点"
+            )
+            return final_output
+
+    def get_starinfo(self, starname):
+        # 查找映射字典以获取API参数
+        if starname is not None:
+            url = "https://apis.tianapi.com/starinfo/index?key=e106437569b8fa19f1527c9939022e60&name=" + starname
+            try:
+                data = self.make_request(url, "GET")
+                if isinstance(data, dict) and data['code'] == 200 and data['msg'] == 'success':
+                    star_list = data['result']['list']
+                    output = []
+                    for star_data in star_list:
+                        info = [
+                            f"姓名：{star_data.get('name', '未知')}",
+                            f"性别：{star_data.get('sex', '未知')}",
+                            f"国籍：{star_data.get('nationality', '未知')}",
+                            f"出生日期：{star_data.get('birthDate', '未知')}",
+                            f"职业：{star_data.get('occupation', '未知')}",
+                            f"身高：{star_data.get('high', '未知')}",
+                            f"体重：{star_data.get('weight', '未知')}",
+                            f"描述：{star_data.get('desc', '未知')}",
+                            f"出生地：{star_data.get('nativePlace', '未知')}",
+                            f"毕业院校：{star_data.get('school', '未知')}",
+                            f"所属公司：{star_data.get('company', '未知')}",
+                            f"星座：{star_data.get('constellation', '未知')}",
+                            f"习惯：{star_data.get('habit', '未知')}"
+                        ]
+                        output.append("\n".join(info))
+                    return "\n".join(output)
+                else:
+                    return self.handle_error(data, "信息获取失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
+        else:
+            final_output = (
+                f"👉 请按照以下格式发送：搜人+人名 例如：搜人刘德华"
+            )
+            return final_output
+
+    def get_starpic(self, starname):
+        # 查找映射字典以获取API参数
+        if starname is not None:
+            url = "https://apis.tianapi.com/starinfo/index?key=e106437569b8fa19f1527c9939022e60&name=" + starname
+            try:
+                data = self.make_request(url, "GET")
+                if isinstance(data, dict) and data['code'] == 200 and data['msg'] == 'success':
+                    star_list = data['result']['list']
+                    if star_list:
+                        first_star = star_list[0]
+                        first_image_url = first_star.get('imageURL', '未知')
+                        return first_image_url
+                else:
+                    return self.handle_error(data, "图片获取失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
+        else:
+            final_output = (
+                f"👉 请按照以下格式发送：搜图+人名 例如：搜图刘德华"
             )
             return final_output
 
