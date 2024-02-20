@@ -156,26 +156,27 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
-        video_trigger = ["视频字幕", "视频总结", "视频数据"]
-        for trigger in video_trigger:
-            if trigger in content:
-                video_url_match = re.search(f'{trigger}(.*?)$', content)
-                if video_url_match:
-                    video_url = self.extract_video_url(video_url_match.group(1))
-                    if video_url:
-                        content = self.get_video_summary(video_url, trigger)
-                        reply = self.create_reply(ReplyType.TEXT, content)
-                        e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+        if content.startswith("视频"):
+            video_trigger = ["视频字幕", "视频总结", "视频数据"]
+            for trigger in video_trigger:
+                if trigger in content:
+                    video_url_match = re.search(f'{trigger}(.*?)$', content)
+                    if video_url_match:
+                        video_url = self.extract_video_url(video_url_match.group(1))
+                        if video_url:
+                            content = self.get_video_summary(video_url, trigger)
+                            reply = self.create_reply(ReplyType.TEXT, content)
+                            e_context["reply"] = reply
+                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            return
 
-        video_download = ["视频下载", "视频解析"]
-        for trigger in video_download:
-            if trigger in content:
-                video_url_match = re.search(f'{trigger}(.*?)$', content)
-                if video_url_match:
-                    video_url = self.extract_video_url(video_url_match.group(1))
-                    if video_url:
+            video_download = ["视频下载", "视频解析"]
+            for trigger in video_download:
+                if trigger in content:
+                    video_url_match = re.search(f'{trigger}(.*?)$', content)
+                    if video_url_match:
+                        video_url = self.extract_video_url(video_url_match.group(1))
+                        if video_url:
                             content = self.get_video_download(video_url)
                             reply = self.create_reply(ReplyType.VIDEO_URL, content)
                             e_context["reply"] = reply
