@@ -648,13 +648,13 @@ class Apilot(Plugin):
                 response = requests.request("POST", api_url, data=payload, headers=headers)
                 response.raise_for_status()  # 如果状态码是 4xx 或 5xx，抛出 HTTPError 异常
             except requests.exceptions.HTTPError as errh:
-                return self.handle_error(errh, "HTTP Error")
+                return self.handle_error(errh, "地址解析失败：HTTP Error")
             except requests.exceptions.ConnectionError as errc:
-                return self.handle_error(errc, "Error Connecting")
+                return self.handle_error(errc, "地址解析失败：Error Connecting")
             except requests.exceptions.Timeout as errt:
-                return self.handle_error(errt, "Timeout Error")
+                return self.handle_error(errt, "地址解析失败：Timeout Error")
             except requests.exceptions.RequestException as err:
-                return self.handle_error(err, "Something went wrong")
+                return self.handle_error(err, "地址解析失败：Something went wrong")
 
             if response.status_code == 200:
                 response_json = response.json()
