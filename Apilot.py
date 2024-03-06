@@ -660,10 +660,12 @@ class Apilot(Plugin):
                 response_json = response.json()
                 if 'data' in response_json and response_json['data'] is not None and 'video_url' in response_json['data']:
                     #return response_json['data']['video_url']
-                    return "标题：" + response_json['data']['title'] + "\n我被限流了，请自行访问：\n" + response_json['data']['video_url']
+                    return "\n我被限流了，请自行访问：\n" + "标题：" + response_json['data']['title'] + "\n" + response_json['data']['video_url']
 
             # 如果响应码不是 200，等待 2 秒然后重试
             time.sleep(2)
+            else:
+                return "地址解析失败，请自行访问"
         return None
 
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
