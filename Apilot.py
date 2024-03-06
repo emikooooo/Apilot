@@ -194,7 +194,8 @@ class Apilot(Plugin):
                         video_url = self.extract_video_url(video_url_match.group(1))
                         if video_url:
                             content = self.get_video_download(video_url)
-                            reply = self.create_reply(ReplyType.VIDEO_URL, content)
+                            #reply = self.create_reply(ReplyType.VIDEO_URL, content)
+                            reply = self.create_reply(ReplyType.TEXT, content)
                             e_context["reply"] = reply
                             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                             return
@@ -658,7 +659,8 @@ class Apilot(Plugin):
             if response.status_code == 200:
                 response_json = response.json()
                 if 'data' in response_json and response_json['data'] is not None and 'video_url' in response_json['data']:
-                    return response_json['data']['video_url']
+                    #return response_json['data']['video_url']
+                    return "标题：" + response_json['data']['title'] + "\n我被限流了，请自行访问：\n" + response_json['data']['video_url']
 
             # 如果响应码不是 200，等待 2 秒然后重试
             time.sleep(2)
