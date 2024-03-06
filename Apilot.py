@@ -643,18 +643,18 @@ class Apilot(Plugin):
         payload = f"token=Pv9NigNNblo6nxCs&url={video_url}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
         # 重试 10 次
-        for _ in range(10):
+        for _ in range(2):
             try:
                 response = requests.request("POST", api_url, data=payload, headers=headers)
                 response.raise_for_status()  # 如果状态码是 4xx 或 5xx，抛出 HTTPError 异常
             except requests.exceptions.HTTPError as errh:
-                print("HTTP Error:", errh)
+                return self.handle_error(errh, "HTTP Error")
             except requests.exceptions.ConnectionError as errc:
-                print("Error Connecting:", errc)
+                return self.handle_error(errc, "Error Connecting")
             except requests.exceptions.Timeout as errt:
-                print("Timeout Error:", errt)
+                return self.handle_error(errt, "Timeout Error")
             except requests.exceptions.RequestException as err:
-                print("Something went wrong", err)
+                return self.handle_error(err, "Something went wrong")
 
             if response.status_code == 200:
                 response_json = response.json()
@@ -663,9 +663,7 @@ class Apilot(Plugin):
                     return "\n我被限流了，请自行访问：\n" + "标题：" + response_json['data']['title'] + "\n" + response_json['data']['video_url']
 
             # 如果响应码不是 200，等待 2 秒然后重试
-            time.sleep(2)
-            else:
-                return "地址解析失败，请自行访问"
+            time.sleep(10)
         return None
 
     def query_express_info(self, alapi_token, tracking_number, com="", order="asc"):
