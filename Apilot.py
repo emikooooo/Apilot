@@ -455,6 +455,7 @@ class Apilot(Plugin):
                                 seen_times.add(target_time)
                                 output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
+                    outputusd = "/".join(output)
                 response = requests.request("POST", url, data=payloadEUR, headers=headers)
                 data = response.json()
                 if data['success']:
@@ -471,7 +472,12 @@ class Apilot(Plugin):
                                 seen_times.add(target_time)
                                 output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
-                    return "\n".join(output)
+                    outputeur = "/".join(output)
+                    finaloutput = (
+                        f"👉 美元：\n\n    {outputusd}\n"
+                        f"👉 欧元：\n\n    {outputeur}\n"
+                    )
+                    return finaloutput
                 else:
                     return self.handle_error(data, "汇率获取失败，请稍后再试")
             except Exception as e:
