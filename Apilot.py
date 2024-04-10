@@ -455,7 +455,7 @@ class Apilot(Plugin):
                                 seen_times.add(target_time)
                                 output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
-                    outputusd = "/".join(output)
+                    outputusd = .join(output)
                 response = requests.request("POST", url, data=payloadEUR, headers=headers)
                 data = response.json()
                 if data['success']:
@@ -472,7 +472,7 @@ class Apilot(Plugin):
                                 seen_times.add(target_time)
                                 output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
-                    outputeur = "/".join(output)
+                    outputeur = .join(output)
                     finaloutput = (
                         f"👉 美元：\n\n    {outputusd}\n"
                         f"👉 欧元：\n\n    {outputeur}\n"
