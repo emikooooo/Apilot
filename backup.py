@@ -432,7 +432,6 @@ class Apilot(Plugin):
         bank_name_en = bank_names.get(bank_name, None)
         currency_name_en = currency_names.get(currency_name, None)
         payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        payloadEUR = f"app=finance.rate_cnyquot_history&curno=EUR&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
         if date:
             payload += f"&date={date}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
@@ -440,22 +439,6 @@ class Apilot(Plugin):
             url = "https://sapi.k780.com/"
             try:
                 response = requests.request("POST", url, data=payload, headers=headers)
-                data = response.json()
-                if data['success']:
-                    result = data['result']['lists']
-                    latest = result[0]
-                    output = [f"**{bank_name}{currency_name}汇率查询**\n最新更新时间：{latest['upymd']} {latest['uphis']}\n现汇买入价：{latest['se_buy']}\n现汇卖出价：{latest['se_sell']}\n\n***主要时点后第一个报价*** \n| 时间 | 现汇买入价 | 现汇卖出价 | "]
-                    target_times = ["00:00","09:00", "09:30", "09:59", "10:00", "10:30"]
-                    seen_times = set()
-                    sorted_result = sorted(result, key=lambda x: x['uphis'])
-                    for target_time in target_times:
-                        for item in sorted_result:
-                            time = item['uphis'][:5]
-                            if time >= target_time and target_time not in seen_times:
-                                seen_times.add(target_time)
-                                output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
-                                break
-                response = requests.request("POST", url, data=payloadEUR, headers=headers)
                 data = response.json()
                 if data['success']:
                     result = data['result']['lists']
