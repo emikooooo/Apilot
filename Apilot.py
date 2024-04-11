@@ -491,12 +491,12 @@ class Apilot(Plugin):
 
             # 定义要查询的汇率列表
         exchange_rates = [
-            {"bank_name": "中国银行", "currency_name": "美元", "target_time": "09:30"},
-            {"bank_name": "中国银行", "currency_name": "美元", "target_time": "10:00"},
-            {"bank_name": "中国银行", "currency_name": "美元", "target_time": "10:30"},
-            {"bank_name": "中国银行", "currency_name": "欧元", "target_time": "10:00"},
-            {"bank_name": "中国银行", "currency_name": "港币", "target_time": "09:30"},
-            {"bank_name": "中国银行", "currency_name": "港币", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "美元", "target_time": "09:30"},
+            {"bank_name": "中行", "currency_name": "美元", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "美元", "target_time": "10:30"},
+            {"bank_name": "中行", "currency_name": "欧元", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "港币", "target_time": "09:30"},
+            {"bank_name": "中行", "currency_name": "港币", "target_time": "10:00"},
         ]
 
         # 逐个查询汇率并格式化输出
