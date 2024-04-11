@@ -504,7 +504,7 @@ class Apilot(Plugin):
         ]
 
         # 逐个查询汇率并格式化输出
-        results = []
+        results = ["查询结果："]
         for exchange_rate in exchange_rates:
             bank_name = exchange_rate["bank_name"]
             currency_name = exchange_rate["currency_name"]
@@ -528,7 +528,7 @@ class Apilot(Plugin):
                         for item in sorted_result:
                             time = item['uphis'][:5]
                             if time >= target_time:
-                                results.append(f"|{bank_name} | {target_time} | {currency_name} | {item['se_sell']} |")
+                                results.append(f"{bank_name} {target_time} {currency_name}: {item['se_sell']}")
                                 break
                     else:
                         print("汇率获取失败，请稍后再试")
