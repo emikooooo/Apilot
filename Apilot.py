@@ -479,9 +479,9 @@ class Apilot(Plugin):
 
     def get_daily_rate(self):
         # 查找映射字典以获取API参数
-        payloadUSD = f"app=finance.rate_cnyquot_history&curno=USD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        payloadEUR = f"app=finance.rate_cnyquot_history&curno=EUR&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        payloadHKD = f"app=finance.rate_cnyquot_history&curno=HKD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        payloadUSD = "app=finance.rate_cnyquot_history&curno=USD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        payloadEUR = "app=finance.rate_cnyquot_history&curno=EUR&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        payloadHKD = "app=finance.rate_cnyquot_history&curno=HKD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
         if payloadUSD is not None:
             url = "https://sapi.k780.com/"
