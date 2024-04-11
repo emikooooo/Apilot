@@ -493,6 +493,14 @@ class Apilot(Plugin):
             {"bank_name": "中行", "currency_name": "GBP", "target_time": "10:00"},
             {"bank_name": "中行", "currency_name": "USD", "target_time": "00:00"},
             {"bank_name": "交行", "currency_name": "USD", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "EUR", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "HKD", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "AUD", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "JPY", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "CHF", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "SGD", "target_time": "10:00"},
+            {"bank_name": "交行", "currency_name": "GBP", "target_time": "10:00"},
+            {"bank_name": "工行", "currency_name": "USD", "target_time": "10:00"},
         ]
 
         # 逐个查询汇率并格式化输出
@@ -520,7 +528,7 @@ class Apilot(Plugin):
                         for item in sorted_result:
                             time = item['uphis'][:5]
                             if time >= target_time:
-                                results.append(f"|{bank_name} {currency_name} | {item['uphis']} | {item['se_sell']/100} | ")
+                                results.append(f"|{bank_name}|{currency_name}|{currency_name}|{item['se_sell']/100}|")
                                 break
                     else:
                         print("汇率获取失败，请稍后再试")
