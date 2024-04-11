@@ -154,6 +154,13 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        if content == "每日查询":
+            content = self.get_daily_rate()
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         hot_trend_match = re.search(r'(.{1,6})热榜$', content)
         if hot_trend_match:
             hot_trends_type = hot_trend_match.group(1).strip()  # 提取匹配的组并去掉可能的空格
@@ -432,7 +439,6 @@ class Apilot(Plugin):
         bank_name_en = bank_names.get(bank_name, None)
         currency_name_en = currency_names.get(currency_name, None)
         payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        payloadEUR = f"app=finance.rate_cnyquot_history&curno=EUR&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
         if date:
             payload += f"&date={date}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
@@ -455,14 +461,55 @@ class Apilot(Plugin):
                                 seen_times.add(target_time)
                                 output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
+                    return "\n".join(output)
+                else:
+                    return self.handle_error(data, "汇率获取失败，请稍后再试")
+            except Exception as e:
+                return self.handle_error(e, "出错啦，稍后再试")
+        else:
+            supported_bank_names = "/".join(bank_names.keys())
+            supported_currency_names = "/".join(currency_names.keys())
+            final_output = (
+                f"👉 已支持的银行有：\n\n    {supported_bank_names}\n"
+                f"👉 已支持的币种有：\n\n    {supported_currency_names}\n"
+                f"\n📝 请按照以下格式发送：\n    银行+币种+汇率  例如：中行美元汇率"
+                f"\n📝 历史查询末尾加日期：\n    例如：中行美元汇率20240113"
+            )
+            return final_output
+
+    def get_daily_rate(self):
+        # 查找映射字典以获取API参数
+        payloadUSD = f"app=finance.rate_cnyquot_history&curno=USD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        payloadEUR = f"app=finance.rate_cnyquot_history&curno=EUR&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        payloadHKD = f"app=finance.rate_cnyquot_history&curno=HKD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+        headers = {'Content-Type': "application/x-www-form-urlencoded"}
+        if payloadUSD is not None:
+            url = "https://sapi.k780.com/"
+            try:
+                response = requests.request("POST", url, data=payloadUSD, headers=headers)
+                data = response.json()
+                if data['success']:
+                    result = data['result']['lists']
+                    latest = result[0]
+                    output = []
+                    target_times = ["00:00", "09:30", "10:00", "10:30"]
+                    seen_times = set()
+                    sorted_result = sorted(result, key=lambda x: x['uphis'])
+                    for target_time in target_times:
+                        for item in sorted_result:
+                            time = item['uphis'][:5]
+                            if time >= target_time and target_time not in seen_times:
+                                seen_times.add(target_time)
+                                output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
+                                break
                     outputusd = .join(output)
                 response = requests.request("POST", url, data=payloadEUR, headers=headers)
                 data = response.json()
                 if data['success']:
                     result = data['result']['lists']
                     latest = result[0]
-                    output = [f"**{bank_name}{currency_name}汇率查询**\n最新更新时间：{latest['upymd']} {latest['uphis']}\n现汇买入价：{latest['se_buy']}\n现汇卖出价：{latest['se_sell']}\n\n***主要时点后第一个报价*** \n| 时间 | 现汇买入价 | 现汇卖出价 | "]
-                    target_times = ["00:00","09:00", "09:30", "09:59", "10:00", "10:30"]
+                    output = []
+                    target_times = ["10:00"]
                     seen_times = set()
                     sorted_result = sorted(result, key=lambda x: x['uphis'])
                     for target_time in target_times:
@@ -473,9 +520,27 @@ class Apilot(Plugin):
                                 output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
                     outputeur = .join(output)
+                response = requests.request("POST", url, data=payloadHKD, headers=headers)
+                data = response.json()
+                if data['success']:
+                    result = data['result']['lists']
+                    latest = result[0]
+                    output = []
+                    target_times = ["09:30", "10:00"]
+                    seen_times = set()
+                    sorted_result = sorted(result, key=lambda x: x['uphis'])
+                    for target_time in target_times:
+                        for item in sorted_result:
+                            time = item['uphis'][:5]
+                            if time >= target_time and target_time not in seen_times:
+                                seen_times.add(target_time)
+                                output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
+                                break
+                    outputhkd = .join(output)
                     finaloutput = (
-                        f"👉 美元：\n\n    {outputusd}\n"
-                        f"👉 欧元：\n\n    {outputeur}\n"
+                        f" {outputusd}\n"
+                        f" {outputeur}\n"
+                        f" {outputhkd}\n"
                     )
                     return finaloutput
                 else:
