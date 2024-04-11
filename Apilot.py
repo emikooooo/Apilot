@@ -512,14 +512,7 @@ class Apilot(Plugin):
                         for item in sorted_result:
                             time = item['uphis'][:5]
                             if time >= target_time:
-                                output = {
-                                    "bank_name": bank_name,
-                                    "currency_name": currency_name,
-                                    "time": time,
-                                    "buy_rate": item['se_buy'],
-                                    "sell_rate": item['se_sell'],
-                                }
-                                results.append(output)
+                                results.append(f"|{bank_name} {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
                                 break
                     else:
                         print("汇率获取失败，请稍后再试")
