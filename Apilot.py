@@ -529,7 +529,7 @@ class Apilot(Plugin):
                 print("不支持的银行或货币")
 
         # 返回结果列表
-        return results
+        return '\n'.join(results)
 
     def get_hot_trends(self, hot_trends_type):
         # 查找映射字典以获取API参数
