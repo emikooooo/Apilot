@@ -487,20 +487,7 @@ class Apilot(Plugin):
             {"bank_name": "中行", "currency_name": "HKD", "target_time": "九点半"},
             {"bank_name": "中行", "currency_name": "HKD", "target_time": "十点"},
             {"bank_name": "中行", "currency_name": "AUD", "target_time": "十点"},
-            {"bank_name": "中行", "currency_name": "JPY", "target_time": "十点"},
-            {"bank_name": "中行", "currency_name": "CHF", "target_time": "十点"},
-            {"bank_name": "中行", "currency_name": "SGD", "target_time": "十点"},
-            {"bank_name": "中行", "currency_name": "GBP", "target_time": "十点"},
-            {"bank_name": "中行", "currency_name": "USD", "target_time": "零点"},
-            {"bank_name": "交行", "currency_name": "USD", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "EUR", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "HKD", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "AUD", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "JPY", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "CHF", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "SGD", "target_time": "十点"},
-            {"bank_name": "交行", "currency_name": "GBP", "target_time": "十点"},
-            {"bank_name": "工行", "currency_name": "USD", "target_time": "十点"},
+
         ]
 
         # 逐个查询汇率并格式化输出
