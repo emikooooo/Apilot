@@ -477,86 +477,72 @@ class Apilot(Plugin):
             )
             return final_output
 
-    def get_daily_rate(self):
-        # 查找映射字典以获取API参数
-        payloadUSD = "app=finance.rate_cnyquot_history&curno=USD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        payloadEUR = "app=finance.rate_cnyquot_history&curno=EUR&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        payloadHKD = "app=finance.rate_cnyquot_history&curno=HKD&bankno=BOC&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
-        headers = {'Content-Type': "application/x-www-form-urlencoded"}
-        if payloadUSD is not None:
-            url = "https://sapi.k780.com/"
-            try:
-                response = requests.request("POST", url, data=payloadUSD, headers=headers)
-                data = response.json()
-                if data['success']:
-                    result = data['result']['lists']
-                    latest = result[0]
-                    output = []
-                    target_times = ["00:00", "09:30", "10:00", "10:30"]
-                    seen_times = set()
-                    sorted_result = sorted(result, key=lambda x: x['uphis'])
-                    for target_time in target_times:
-                        for item in sorted_result:
-                            time = item['uphis'][:5]
-                            if time >= target_time and target_time not in seen_times:
-                                seen_times.add(target_time)
-                                output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
-                                break
-                    outputusd = .join(output)
-                response = requests.request("POST", url, data=payloadEUR, headers=headers)
-                data = response.json()
-                if data['success']:
-                    result = data['result']['lists']
-                    latest = result[0]
-                    output = []
-                    target_times = ["10:00"]
-                    seen_times = set()
-                    sorted_result = sorted(result, key=lambda x: x['uphis'])
-                    for target_time in target_times:
-                        for item in sorted_result:
-                            time = item['uphis'][:5]
-                            if time >= target_time and target_time not in seen_times:
-                                seen_times.add(target_time)
-                                output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
-                                break
-                    outputeur = .join(output)
-                response = requests.request("POST", url, data=payloadHKD, headers=headers)
-                data = response.json()
-                if data['success']:
-                    result = data['result']['lists']
-                    latest = result[0]
-                    output = []
-                    target_times = ["09:30", "10:00"]
-                    seen_times = set()
-                    sorted_result = sorted(result, key=lambda x: x['uphis'])
-                    for target_time in target_times:
-                        for item in sorted_result:
-                            time = item['uphis'][:5]
-                            if time >= target_time and target_time not in seen_times:
-                                seen_times.add(target_time)
-                                output.append(f"| {item['uphis']} | {item['se_buy']} | {item['se_sell']} | ")
-                                break
-                    outputhkd = .join(output)
-                    finaloutput = (
-                        f" {outputusd}\n"
-                        f" {outputeur}\n"
-                        f" {outputhkd}\n"
-                    )
-                    return finaloutput
+        def get_daily_rate(self):
+            # 定义银行名称和货币名称映射字典
+            bank_names = {
+                "中国银行": "BOC",
+            }
+
+            currency_names = {
+                "美元": "USD",
+                "欧元": "EUR",
+                "港币": "HKD",
+            }
+
+            # 定义要查询的汇率列表
+            exchange_rates = [
+                {"bank_name": "中国银行", "currency_name": "美元", "target_time": "09:30"},
+                {"bank_name": "中国银行", "currency_name": "美元", "target_time": "10:00"},
+                {"bank_name": "中国银行", "currency_name": "美元", "target_time": "10:30"},
+                {"bank_name": "中国银行", "currency_name": "欧元", "target_time": "10:00"},
+                {"bank_name": "中国银行", "currency_name": "港币", "target_time": "09:30"},
+                {"bank_name": "中国银行", "currency_name": "港币", "target_time": "10:00"},
+            ]
+
+            # 逐个查询汇率并格式化输出
+            results = []
+            for exchange_rate in exchange_rates:
+                bank_name = exchange_rate["bank_name"]
+                currency_name = exchange_rate["currency_name"]
+                target_time = exchange_rate["target_time"]
+
+                # 查找映射字典以获取API参数
+                bank_name_en = bank_names.get(bank_name, None)
+                currency_name_en = currency_names.get(currency_name, None)
+                payload = f"app=finance.rate_cnyquot_history&curno={currency_name_en}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
+                headers = {'Content-Type': "application/x-www-form-urlencoded"}
+
+                # 发送请求并处理响应
+                if bank_name_en is not None:
+                    url = "https://sapi.k780.com/"
+                    try:
+                        response = requests.request("POST", url, data=payload, headers=headers)
+                        data = response.json()
+                        # 解析和格式化数据
+                        if data['success']:
+                            result = data['result']['lists']
+                            sorted_result = sorted(result, key=lambda x: x['uphis'])
+                            for item in sorted_result:
+                                time = item['uphis'][:5]
+                                if time >= target_time:
+                                    output = {
+                                        "bank_name": bank_name,
+                                        "currency_name": currency_name,
+                                        "time": time,
+                                        "buy_rate": item['se_buy'],
+                                        "sell_rate": item['se_sell'],
+                                    }
+                                    results.append(output)
+                                    break
+                        else:
+                            print("汇率获取失败，请稍后再试")
+                    except Exception as e:
+                        print("出错啦，稍后再试")
                 else:
-                    return self.handle_error(data, "汇率获取失败，请稍后再试")
-            except Exception as e:
-                return self.handle_error(e, "出错啦，稍后再试")
-        else:
-            supported_bank_names = "/".join(bank_names.keys())
-            supported_currency_names = "/".join(currency_names.keys())
-            final_output = (
-                f"👉 已支持的银行有：\n\n    {supported_bank_names}\n"
-                f"👉 已支持的币种有：\n\n    {supported_currency_names}\n"
-                f"\n📝 请按照以下格式发送：\n    银行+币种+汇率  例如：中行美元汇率"
-                f"\n📝 历史查询末尾加日期：\n    例如：中行美元汇率20240113"
-            )
-            return final_output
+                    print("不支持的银行或货币")
+
+            # 返回结果列表
+            return results
 
     def get_hot_trends(self, hot_trends_type):
         # 查找映射字典以获取API参数
