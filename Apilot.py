@@ -480,10 +480,19 @@ class Apilot(Plugin):
     def get_daily_rate(self):
             # 定义要查询的汇率列表
         exchange_rates = [
-            {"bank_name": "中行", "currency_name": "USD", "target_time": "九点半"},
-            {"bank_name": "中行", "currency_name": "USD", "target_time": "十点半"},
-            {"bank_name": "中行", "currency_name": "HKD", "target_time": "九点半"},
-
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "09:30"},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "10:30"},
+            {"bank_name": "中行", "currency_name": "EUR", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "HKD", "target_time": "09:30"},
+            {"bank_name": "中行", "currency_name": "HKD", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "AUD", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "JPY", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "CHF", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "SGD", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "GBP", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "00:00"},
+            {"bank_name": "交行", "currency_name": "USD", "target_time": "10:00"},
         ]
 
         # 逐个查询汇率并格式化输出
@@ -495,7 +504,6 @@ class Apilot(Plugin):
 
             # 查找映射字典以获取API参数
             bank_name_en = bank_names.get(bank_name, None)
-            target_time_en = target_times.get(target_time, None)
             payload = f"app=finance.rate_cnyquot_history&curno={currency_name}&bankno={bank_name_en}&appkey=72058&sign=4aaae5cd8d1be6759352edba53e8dff1&format=json"
             headers = {'Content-Type': "application/x-www-form-urlencoded"}
 
@@ -511,7 +519,7 @@ class Apilot(Plugin):
                         sorted_result = sorted(result, key=lambda x: x['uphis'])
                         for item in sorted_result:
                             time = item['uphis'][:5]
-                            if time >= target_time_en:
+                            if time >= target_time:
                                 results.append(f"|{bank_name} {currency_name} | {item['uphis']} | {item['se_sell']/100} | ")
                                 break
                     else:
@@ -940,14 +948,6 @@ bank_names = {
 
     }
 
-target_times = {
-    "零点": "00:00",
-    "九点半": "09:30",
-    "十点半": "10:30",
-    "十点": "10:00",
-
-    }
-
 currency_names = {
     "美元": "USD",
     "欧元": "EUR",
@@ -956,7 +956,7 @@ currency_names = {
     "法郎": "CHF",
     "新加坡元": "SGD",
     "日元": "JPY",
-    "英镑": "GBP",
+    "英镑": "GBP"
 
     }
 
