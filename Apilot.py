@@ -500,7 +500,7 @@ class Apilot(Plugin):
             headers = {'Content-Type': "application/x-www-form-urlencoded"}
 
             # 发送请求并处理响应
-            if bank_name_en is not None:
+            if bank_name is not None:
                 url = "https://sapi.k780.com/"
                 try:
                     response = requests.request("POST", url, data=payload, headers=headers)
