@@ -481,12 +481,8 @@ class Apilot(Plugin):
             # 定义要查询的汇率列表
         exchange_rates = [
             {"bank_name": "中行", "currency_name": "USD", "target_time": "九点半"},
-            {"bank_name": "中行", "currency_name": "USD", "target_time": "十点"},
             {"bank_name": "中行", "currency_name": "USD", "target_time": "十点半"},
-            {"bank_name": "中行", "currency_name": "EUR", "target_time": "十点"},
             {"bank_name": "中行", "currency_name": "HKD", "target_time": "九点半"},
-            {"bank_name": "中行", "currency_name": "HKD", "target_time": "十点"},
-            {"bank_name": "中行", "currency_name": "AUD", "target_time": "十点"},
 
         ]
 
