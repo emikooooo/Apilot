@@ -528,7 +528,7 @@ class Apilot(Plugin):
                         sorted_result = sorted(result, key=lambda x: x['uphis'])
                         for item in sorted_result:
                             time = item['uphis'][:5]
-                            if time >= target_time:
+                            if time >= target_time_en:
                                 results.append(f"|{bank_name} {currency_name} | {item['uphis']} | {item['se_sell']/100} | ")
                                 break
                     else:
