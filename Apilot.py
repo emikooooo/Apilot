@@ -510,7 +510,7 @@ class Apilot(Plugin):
         # 逐个查询汇率并格式化输出
         current_datetime = datetime.now()
         current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M")
-        results = [f"📅{current_datetime_str}查询结果："]
+        results = [f"📅 {current_datetime_str} 查询结果：\n🟢 代表数据一致 \n🔴 代表数据不一致"]
         for i, exchange_rate in enumerate(exchange_rates):
             bank_name = exchange_rate["bank_name"]
             currency_name = exchange_rate["currency_name"]
@@ -542,9 +542,9 @@ class Apilot(Plugin):
                                 rate_str = str(rate).rstrip('0').rstrip('.')  # 删除多余的零和小数点
                                 input_value_decimal = Decimal(input_values[i]).quantize(Decimal('.000001'), rounding=ROUND_HALF_UP)
                                 if rate == input_value_decimal:
-                                    results.append(f"{bank_name} {target_time} {currency_name}: {rate_str} 🟢 一致")
+                                    results.append(f"🟢 {bank_name} {target_time} {currency_name}: {rate_str}")
                                 else:
-                                    results.append(f"{bank_name} {target_time} {currency_name}: {rate_str} \n🔴 数据不一致，ERP系统数据为 {input_values[i]}")
+                                    results.append(f"🔴 {bank_name} {target_time} {currency_name}: {rate_str}\n📌 数据不一致，ERP系统数据为 {input_values[i]}")
                                 found = True
                                 break
                         if not found:
