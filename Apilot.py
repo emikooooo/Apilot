@@ -527,7 +527,7 @@ class Apilot(Plugin):
                         for item in sorted_result:
                             time = item['uphis'][:5]
                             if time >= target_time:
-                                results.append(f"{bank_name} {target_time} {currency_name}: {float(item['se_sell']) / 100}")
+                                results.append(f"{bank_name} {target_time} {currency_name}: {float(item['se_sell'])}")
                                 found = True
                                 break
                         if not found:
