@@ -156,10 +156,7 @@ class Apilot(Plugin):
             return
 
         if content == "每日查询":
-            start_index = content.find("每日查询")
-            lines = content[start_index + len("每日查询"):].strip().split('\n')
-            input_values = [val for val in lines if val.strip()]  # 确保没有空行
-            content = self.get_daily_rate(input_values)
+            content = self.get_daily_rate()
             reply = self.create_reply(ReplyType.TEXT, content)
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -481,7 +478,7 @@ class Apilot(Plugin):
             )
             return final_output
 
-    def get_daily_rate(self,input_values):
+    def get_daily_rate(self):
             # 定义要查询的汇率列表
         exchange_rates = [
             {"bank_name": "中行", "currency_name": "USD", "target_time": "09:30", "divide_by": 100},
@@ -509,12 +506,11 @@ class Apilot(Plugin):
 
         # 逐个查询汇率并格式化输出
         results = ["查询结果："]
-        for i, exchange_rate in enumerate(exchange_rates):
+        for exchange_rate in exchange_rates:
             bank_name = exchange_rate["bank_name"]
             currency_name = exchange_rate["currency_name"]
             target_time = exchange_rate["target_time"]
             divide_by = exchange_rate["divide_by"]
-            rate_str = input_values[i].strip()  # 获取对应汇率输入值
 
             # 查找映射字典以获取API参数
             bank_name_en = bank_names.get(bank_name, None)
@@ -538,7 +534,7 @@ class Apilot(Plugin):
                                 rate = Decimal(item['se_sell']) / divide_by
                                 rate = rate.quantize(Decimal('0.000001'), rounding=ROUND_HALF_UP)
                                 rate_str = str(rate).rstrip('0').rstrip('.')  # 删除多余的零和小数点
-                                results.append(f"{bank_name} {target_time} {currency_name}: {rate_str} - {'一致' if rate_str == input_values[i].strip() else '不一致，输入数据为' + input_values[i]}")
+                                results.append(f"{bank_name} {target_time} {currency_name}: {rate_str}")
                                 found = True
                                 break
                         if not found:
