@@ -155,7 +155,7 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
-        if content == "每日查询":
+        if content.startswith("每日查询"):
             start_index = content.find("每日查询")
             lines = content[start_index + len("每日查询"):].strip().split('\n')
             input_values = [val for val in lines if val.strip()]  # 确保没有空行
