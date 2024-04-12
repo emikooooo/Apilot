@@ -482,6 +482,8 @@ class Apilot(Plugin):
         exchange_rates = [
             {"bank_name": "中行", "currency_name": "USD", "target_time": "09:30"},
             {"bank_name": "中行", "currency_name": "USD", "target_time": "10:00"},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "10:30"},
+            {"bank_name": "中行", "currency_name": "EUR", "target_time": "10:00"},
             {"bank_name": "中行", "currency_name": "HKD", "target_time": "09:30"},
             {"bank_name": "中行", "currency_name": "HKD", "target_time": "10:00"},
             {"bank_name": "中行", "currency_name": "AUD", "target_time": "10:00"},
