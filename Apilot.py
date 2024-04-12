@@ -10,7 +10,7 @@ from channel import channel
 from common.log import logger
 from plugins import *
 from datetime import datetime, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 BASE_URL_VVHAN = "https://api.vvhan.com/api/"
 BASE_URL_ALAPI = "https://v2.alapi.cn/api/"
 
@@ -532,6 +532,7 @@ class Apilot(Plugin):
                             time = item['uphis'][:5]
                             if time >= target_time:
                                 rate = Decimal(item['se_sell']) / divide_by
+                                rate = rate.quantize(Decimal('0.000001'), rounding=ROUND_HALF_UP)
                                 results.append(f"{bank_name} {target_time} {currency_name}: {rate}")
                                 found = True
                                 break
