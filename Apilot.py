@@ -158,7 +158,7 @@ class Apilot(Plugin):
         if content.startswith("每日查询"):
             start_index = content.find("每日查询")
             lines = content[start_index + len("每日查询"):].strip().split('\n')
-            input_values = [val for val in lines if val.strip()]  # 确保没有空行
+            input_values = [line.split('\t')[-1] for line in lines if line.strip()]
             content = self.get_daily_rate(input_values)
             reply = self.create_reply(ReplyType.TEXT, content)
             e_context["reply"] = reply
