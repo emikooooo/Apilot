@@ -508,8 +508,8 @@ class Apilot(Plugin):
         ]
 
         # 逐个查询汇率并格式化输出
-        current_date = date.today()
-        current_date_str = current_date.strftime("%Y-%m-%d")
+        current_datetime = datetime.now()
+        current_date_str = current_datetime.strftime("%Y-%m-%d")
         results = [f"📅 {current_date_str} 查询结果：\n🟢 代表数据一致 \n🔴 代表数据不一致"]
         for i, exchange_rate in enumerate(exchange_rates):
             bank_name = exchange_rate["bank_name"]
