@@ -533,6 +533,7 @@ class Apilot(Plugin):
                             if time >= target_time:
                                 rate = Decimal(item['se_sell']) / divide_by
                                 rate = rate.quantize(Decimal('0.000001'), rounding=ROUND_HALF_UP)
+                                rate_str = str(rate).rstrip('0').rstrip('.')  # 删除多余的零和小数点
                                 results.append(f"{bank_name} {target_time} {currency_name}: {rate}")
                                 found = True
                                 break
