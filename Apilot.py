@@ -538,7 +538,11 @@ class Apilot(Plugin):
                                 rate = Decimal(item['se_sell']) / divide_by
                                 rate = rate.quantize(Decimal('0.000001'), rounding=ROUND_HALF_UP)
                                 rate_str = str(rate).rstrip('0').rstrip('.')  # 删除多余的零和小数点
-                                results.append(f"{bank_name} {target_time} {currency_name}: {rate_str} - {'一致' if rate_str == input_values[i].strip() else '不一致，输入数据为' + input_values[i]}")
+                                input_value_decimal = Decimal(input_values[i]).quantize(Decimal('.000001'), rounding=ROUND_HALF_UP)
+                                if rate == input_value_decimal:
+                                    results.append(f"{bank_name} {target_time} {currency_name}: {rate_str} - 数据一致")
+                                else:
+                                    results.append(f"{bank_name} {target_time} {currency_name}: {rate_str} - \n数据不一致，输入的ERP系统数据为 {input_values[i]}")
                                 found = True
                                 break
                         if not found:
