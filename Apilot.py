@@ -480,9 +480,27 @@ class Apilot(Plugin):
     def get_daily_rate(self):
             # 定义要查询的汇率列表
         exchange_rates = [
-            {"bank_name": "中行", "currency_name": "USD", "target_time": "09:30"},
-            {"bank_name": "中行", "currency_name": "USD", "target_time": "10:00"},
-
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "09:30", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "10:30", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "EUR", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "HKD", "target_time": "09:30", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "HKD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "AUD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "JPY", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "CHF", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "SGD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "GBP", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "中行", "currency_name": "USD", "target_time": "00:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "USD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "EUR", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "HKD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "AUD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "JPY", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "CHF", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "SGD", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "交行", "currency_name": "GBP", "target_time": "10:00", "digi_corr":100},
+            {"bank_name": "工行", "currency_name": "USD", "target_time": "10:00", "digi_corr":100},
         ]
 
         # 逐个查询汇率并格式化输出
@@ -491,6 +509,7 @@ class Apilot(Plugin):
             bank_name = exchange_rate["bank_name"]
             currency_name = exchange_rate["currency_name"]
             target_time = exchange_rate["target_time"]
+            digi_corr = exchange_rate["digi_corr"]
 
             # 查找映射字典以获取API参数
             bank_name_en = bank_names.get(bank_name, None)
@@ -511,7 +530,7 @@ class Apilot(Plugin):
                         for item in sorted_result:
                             time = item['uphis'][:5]
                             if time >= target_time:
-                                results.append(f"{bank_name} {target_time} {currency_name}: {float(item['se_sell']) / 100}")
+                                results.append(f"{bank_name} {target_time} {currency_name}: {float(item['se_sell']) / {digi_corr}}")
                                 found = True
                                 break
                         if not found:
