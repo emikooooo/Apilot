@@ -162,7 +162,7 @@ class Apilot(Plugin):
             if 20 <= len(input_values):
                 content = self.get_daily_rate(input_values)
                 reply = self.create_reply(ReplyType.TEXT, content)
-            else：
+            else:
                 reply = self.create_reply(ReplyType.TEXT, "请确保正确的从ERP系统中复制所有的汇率结果")
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
