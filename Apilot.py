@@ -508,9 +508,7 @@ class Apilot(Plugin):
         ]
 
         # 逐个查询汇率并格式化输出
-        get_date = data['result']['lists']
-        query_date = get_date[0]['upymd']
-        results = [f"📅 {query_date} 查询结果："]
+        results = []
         for i, exchange_rate in enumerate(exchange_rates):
             bank_name = exchange_rate["bank_name"]
             currency_name = exchange_rate["currency_name"]
@@ -532,6 +530,8 @@ class Apilot(Plugin):
                     # 解析和格式化数据
                     if data['success']:
                         result = data['result']['lists']
+                        query_date = result[0]['upymd']
+                        results = [f"📅 {query_date} 查询结果："]
                         sorted_result = sorted(result, key=lambda x: x['uphis'])
                         found = False
                         for item in sorted_result:
