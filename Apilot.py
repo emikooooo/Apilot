@@ -525,12 +525,14 @@ class Apilot(Plugin):
                     if data['success']:
                         result = data['result']['lists']
                         sorted_result = sorted(result, key=lambda x: x['uphis'])
+                        found = False
                         for item in sorted_result:
                             time = item['uphis'][:5]
                             if time >= target_time:
                                 results.append(f"{bank_name} {target_time} {currency_name}: {item['se_sell']}")
+                                found = True
                                 break
-                        if len(results) == 1:
+                        if not found:
                             results.append(f"{bank_name} {target_time} {currency_name}: 未取得数据")
                     else:
                         print("汇率获取失败，请稍后再试")
