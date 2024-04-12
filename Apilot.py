@@ -508,7 +508,7 @@ class Apilot(Plugin):
         ]
 
         # 逐个查询汇率并格式化输出
-        current_datetime = datetime.datetime.now()
+        current_datetime = datetime.now()
         current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M")
         results = [f"📅{current_datetime_str}查询结果："]
         for i, exchange_rate in enumerate(exchange_rates):
