@@ -530,6 +530,8 @@ class Apilot(Plugin):
                             if time >= target_time:
                                 results.append(f"{bank_name} {target_time} {currency_name}: {item['se_sell']}")
                                 break
+                        if len(results) == 1:
+                            results.append(f"{bank_name} {target_time} {currency_name}: 未取得数据")
                     else:
                         print("汇率获取失败，请稍后再试")
                 except Exception as e:
