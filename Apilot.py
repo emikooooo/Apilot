@@ -159,8 +159,11 @@ class Apilot(Plugin):
             start_index = content.find("每日查询")
             lines = content[start_index + len("每日查询"):].strip().split('\n')
             input_values = [line.split('\t')[-1] for line in lines if line.strip()]
-            content = self.get_daily_rate(input_values)
-            reply = self.create_reply(ReplyType.TEXT, content)
+            if 20 <= len(input_values):
+                content = self.get_daily_rate(input_values)
+                reply = self.create_reply(ReplyType.TEXT, content)
+            else：
+                reply = self.create_reply(ReplyType.TEXT, "请确保正确的从ERP系统中复制所有的汇率结果")
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
