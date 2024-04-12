@@ -542,9 +542,9 @@ class Apilot(Plugin):
                                 rate_str = str(rate).rstrip('0').rstrip('.')  # 删除多余的零和小数点
                                 input_value_decimal = Decimal(input_values[i]).quantize(Decimal('.000001'), rounding=ROUND_HALF_UP)
                                 if rate == input_value_decimal:
-                                    results.append(f"🟢 {bank_name} {target_time} {currency_name}: {rate_str}")
+                                    results.append(f"🟢 {bank_name} {target_time} {currency_name}: {item['se_sell']}")
                                 else:
-                                    results.append(f"🔴 {bank_name} {target_time} {currency_name}: {rate_str}\n📌 ERP系统数据为 {input_values[i]}")
+                                    results.append(f"🔴 {bank_name} {target_time} {currency_name}: {item['se_sell']}\n📌 ERP系统数据为 {input_values[i]}")
                                 found = True
                                 break
                         if not found:
