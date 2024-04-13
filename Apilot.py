@@ -90,13 +90,13 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
         
-        if content.startswith("搜人"):
-            starname = content[2:].strip()
-            content = self.get_starinfo(starname)
-            reply = self.create_reply(ReplyType.TEXT, content)
-            e_context["reply"] = reply
-            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-            return
+        # if content.startswith("搜人"):
+        #     starname = content[2:].strip()
+        #     content = self.get_starinfo(starname)
+        #     reply = self.create_reply(ReplyType.TEXT, content)
+        #     e_context["reply"] = reply
+        #     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+        #     return
 
         if content.startswith("搜图"):
             starname = content[2:].strip()
