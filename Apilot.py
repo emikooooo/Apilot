@@ -547,7 +547,7 @@ class Apilot(Plugin):
                                 if rate == input_value_decimal:
                                     results.append(f"🟢 {bank_name} {target_time} {currency_name}: {item['se_sell']}")
                                 else:
-                                    results.append(f"🔴 {bank_name} {target_time} {currency_name}: {item['se_sell']}\n📌 ERP系统数据为 {input_values[i]}")
+                                    results.append(f"\n🔴 {bank_name} {target_time} {currency_name}: {item['se_sell']}\n📌 ERP系统数据为 {input_values[i]}\n")
                                 found = True
                                 break
                         if not found:
