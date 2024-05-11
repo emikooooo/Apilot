@@ -98,13 +98,13 @@ class Apilot(Plugin):
         #     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
         #     return
 
-        if content.startswith("搜图"):
-            starname = content[2:].strip()
-            content = self.get_starpic(starname)
-            reply = self.create_reply(ReplyType.IMAGE_URL, content)
-            e_context["reply"] = reply
-            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-            return
+        #if content.startswith("搜图"):
+        #    starname = content[2:].strip()
+        #    content = self.get_starpic(starname)
+        #    reply = self.create_reply(ReplyType.IMAGE_URL, content)
+        #    e_context["reply"] = reply
+        #    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+        #    return
 
         if content.startswith("快递"):
             # Extract the part after "快递"
