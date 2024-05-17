@@ -365,17 +365,29 @@ class Apilot(Plugin):
         data = self.make_request(url, "GET")
         
         if isinstance(data, list):
-            output = []
+            total_value = 0
+            total_used_value = 0
+            total_remain_value = 0
+            remain_value_non_zero_count = 0
+            
             for item in data:
-                declaration_no = item.get("declaration_no")
-                value = item.get("value")
-                used_value = item.get("used_value")
-                remain_value = item.get("remain_value")
-                formatted_str = f"Declaration No: {declaration_no}, Value: {value}, Used Value: {used_value}, Remain Value: {remain_value}"
-                output.append(formatted_str)
+                total_value += item.get("value", 0)
+                total_used_value += item.get("used_value", 0)
+                total_remain_value += item.get("remain_value", 0)
+                if item.get("remain_value", 0) != 0:
+                    remain_value_non_zero_count += 1
+            
+            output = [
+                f"📌 YT查询结果：{data['date']}\n"
+                f"📊 剩余可用关单数量：{remain_value_non_zero_count}\n",
+                f"📅 通关总值：{total_value}\n",
+                f"🔴 已核销：{total_used_value}\n",
+                f"🟢 剩余可用：{total_remain_value}"
+            ]
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
+
 
 
     def get_moyu_calendar_video(self):
