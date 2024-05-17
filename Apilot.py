@@ -90,6 +90,13 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
         
+        if content == "YT查询":
+            content = self.get_yt()
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         # if content.startswith("搜人"):
         #     starname = content[2:].strip()
         #     content = self.get_starinfo(starname)
@@ -352,6 +359,24 @@ class Apilot(Plugin):
             return "\n".join(output)
         else:
             return self.handle_error(data, "热榜获取失败，请稍后再试")
+
+    def get_yt(self):
+        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/remain?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        data = self.make_request(url, "GET")
+        
+        if isinstance(data, list):
+            output = []
+            for item in data:
+                declaration_no = item.get("declaration_no")
+                value = item.get("value")
+                used_value = item.get("used_value")
+                remain_value = item.get("remain_value")
+                formatted_str = f"Declaration No: {declaration_no}, Value: {value}, Used Value: {used_value}, Remain Value: {remain_value}"
+                output.append(formatted_str)
+            return "\n".join(output)
+        else:
+            return self.handle_error(data, "数据获取失败，请稍后再试")
+
 
     def get_moyu_calendar_video(self):
         url = "https://dayu.qqsuu.cn/moyuribaoshipin/apis.php?type=json"
