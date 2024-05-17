@@ -378,11 +378,11 @@ class Apilot(Plugin):
                     remain_value_non_zero_count += 1
             
             output = [
-                f"📌 YT查询结果：",
-                f"📊 剩余可用关单数量：{remain_value_non_zero_count}\n",
-                f"📅 通关总值：{total_value}\n",
-                f"🔴 已核销：{total_used_value}\n",
-                f"🟢 剩余可用：{total_remain_value}"
+                f"📌 YT查询结果：\n",
+                f"📊 剩余可用关单数量：＄{remain_value_non_zero_count}",
+                f"📅 通关总值：＄{total_value}",
+                f"🔴 已核销：＄{total_used_value}",
+                f"🟢 剩余可用：＄{total_remain_value}"
             ]
             return "\n".join(output)
         else:
