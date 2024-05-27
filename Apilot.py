@@ -97,6 +97,13 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        if content == "YT出库查询":
+            content = self.get_ytck()
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         # if content.startswith("搜人"):
         #     starname = content[2:].strip()
         #     content = self.get_starinfo(starname)
@@ -384,6 +391,21 @@ class Apilot(Plugin):
                 f"🔴 已核销：{total_used_value}",
                 f"🟢 剩余可用：{total_remain_value}"
             ]
+            return "\n".join(output)
+        else:
+            return self.handle_error(data, "数据获取失败，请稍后再试")
+
+    def get_ytck(self):
+        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/checkout?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        data = self.make_request(url, "GET")
+        
+        if isinstance(data, list):
+            output = []
+            for item in data:
+                checkout_sn = item.get('checkout_sn', 'N/A')
+                create_time = item.get('create_time', 'N/A')
+                total_amount = item.get('total_amount', 'N/A')
+                output.append(f"出库合同号：{checkout_sn}\n出库时间：{create_time}\n核销金额：{total_amount}\n\n")
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
