@@ -419,7 +419,7 @@ class Apilot(Plugin):
                 except ValueError:
                     create_date = 'N/A'
                 output.append(f"出库单号：{checkout_sn}\n出库时间：{create_date}\n核销金额：{total_amount:.2f}万元\n")
-            output.append(f"\n💬 发送 \"YT打印关单{checkout_sn}\" 打印出库单\n")
+            output.append(f"💬 发送 \"YT打印关单{checkout_sn}\" 打印出库单\n")
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
