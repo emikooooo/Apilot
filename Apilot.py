@@ -378,18 +378,18 @@ class Apilot(Plugin):
             remain_value_non_zero_count = 0
             
             for item in data:
-                total_value += item.get("value", 0)
-                total_used_value += item.get("used_value", 0)
-                total_remain_value += item.get("remain_value", 0)
+                total_value += item.get("value", 0) / 10000
+                total_used_value += item.get("used_value", 0) / 10000
+                total_remain_value += item.get("remain_value", 0) / 10000
                 if item.get("remain_value", 0) != 0:
                     remain_value_non_zero_count += 1
             
             output = [
                 f"📌 YT查询结果：",
                 f"📊 剩余可用关单数量：{remain_value_non_zero_count}笔",
-                f"📅 通关总值：{total_value}",
-                f"🔴 已核销：{total_used_value}",
-                f"🟢 剩余可用：{total_remain_value}"
+                f"📅 通关总值：{total_value}万元",
+                f"🔴 已核销：{total_used_value}万元",
+                f"🟢 剩余可用：{total_remain_value}万元"
             ]
             return "\n".join(output)
         else:
@@ -404,8 +404,14 @@ class Apilot(Plugin):
             for item in data:
                 checkout_sn = item.get('checkout_sn', 'N/A')
                 create_time = item.get('create_time', 'N/A')
-                total_amount = item.get('total_amount', 'N/A')
-                output.append(f"出库合同号：{checkout_sn}\n出库时间：{create_time}\n核销金额：{total_amount}\n\n")
+                total_amount = item.get('total_amount', 0) / 10000
+                try:
+                    create_date = datetime.fromisoformat(create_time).date()
+                except ValueError:
+                    create_date = 'N/A'
+
+
+                output.append(f"出库合同号：{checkout_sn}\n出库时间：{create_date}\n核销金额：{total_amount}\n万元")
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
