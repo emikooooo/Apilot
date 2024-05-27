@@ -104,6 +104,14 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        if contentstartswith == "YT打印关单":
+            get_checkout_sn = content[6:].strip()
+            content = self.get_ytcheckout(get_checkout_sn)
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         # if content.startswith("搜人"):
         #     starname = content[2:].strip()
         #     content = self.get_starinfo(starname)
@@ -387,9 +395,9 @@ class Apilot(Plugin):
             output = [
                 f"📌 YT查询结果：",
                 f"📊 剩余可用关单数量：{remain_value_non_zero_count}笔",
-                f"📅 通关总值：{total_value}万元",
-                f"🔴 已核销：{total_used_value}万元",
-                f"🟢 剩余可用：{total_remain_value}万元"
+                f"📅 通关总值：{total_value:.2f}万元",
+                f"🔴 已核销：{total_used_value:.2f}万元",
+                f"🟢 剩余可用：{total_remain_value:.2f}万元"
             ]
             return "\n".join(output)
         else:
@@ -411,12 +419,27 @@ class Apilot(Plugin):
                     create_date = 'N/A'
 
 
-                output.append(f"出库单号：{checkout_sn}\n出库时间：{create_date}\n核销金额：{total_amount}万元\n")
+                output.append(f"出库单号：{checkout_sn}\n出库时间：{create_date}\n核销金额：{total_amount:.2f}万元\n")
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
 
-
+    def get_ytcheckout(self, get_checkout_sn):
+        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/checkout_item?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        data = self.make_request(url, "GET")
+        
+        if isinstance(data, list):
+            output = []
+            for item in data:
+                if item.get('checkout_sn') == get_checkout_sn:
+                    declaration_no = item.get('declaration_no', 'N/A')
+                    checkout_value = item.get('checkout_value', 'N/A')
+                    output.append(f"MA5EHNDP1,{declaration_no},usd,{checkout_value:.2f}")
+            if not output:
+                return "没有找到符合条件的出库信息。"
+            return "\n".join(output)
+        else:
+            return self.handle_error(data, "数据获取失败，请稍后再试")
 
     def get_moyu_calendar_video(self):
         url = "https://dayu.qqsuu.cn/moyuribaoshipin/apis.php?type=json"
