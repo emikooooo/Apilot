@@ -104,7 +104,7 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
-        if contentstartswith == "YT打印关单":
+        if content.startswith == "YT打印关单":
             get_checkout_sn = content[6:].strip()
             content = self.get_ytcheckout(get_checkout_sn)
             reply = self.create_reply(ReplyType.TEXT, content)
