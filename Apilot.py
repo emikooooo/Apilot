@@ -229,7 +229,7 @@ class Apilot(Plugin):
                 if video_url_match:
                     video_url = self.extract_video_url(video_url_match.group(1))
                     if video_url:
-                        content = self.get_video_download(video_url)
+                        content = self.get_video_download(video_url, trigger)
                         if trigger in ["视频下载", "复制打开抖音"]:
                             reply = self.create_reply(ReplyType.VIDEO_URL, content)
                         else:
@@ -821,7 +821,7 @@ class Apilot(Plugin):
             except Exception as e:
                 return self.handle_error(e, "视频总结出错啦，稍后再试")
 
-    def get_video_download(self, video_url):
+    def get_video_download(self, video_url, trigger):
         api_url = "https://v2.alapi.cn/api/video/url"
         payload = f"token=Pv9NigNNblo6nxCs&url={video_url}"
         headers = {'Content-Type': "application/x-www-form-urlencoded"}
@@ -842,9 +842,10 @@ class Apilot(Plugin):
             if response.status_code == 200:
                 response_json = response.json()
                 if 'data' in response_json and response_json['data'] is not None and 'video_url' in response_json['data']:
-                    #return response_json['data']['video_url']
-                    return "标题：" + response_json['data']['title'] + "\n" + response_json['data']['video_url']
-
+                    if trigger in ["视频下载", "复制打开抖音"]:
+                        return response_json['data']['video_url']
+                    else:  # 处理"视频解析"
+                        return "标题：" + response_json['data']['title'] + "\n" + response_json['data']['video_url']
             # 如果响应码不是 200，等待 2 秒然后重试
             time.sleep(10)
         return None
