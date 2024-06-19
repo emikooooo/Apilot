@@ -448,9 +448,9 @@ class Apilot(Plugin):
                     output.append(f"MA5EHNDP1,{declaration_no},usd,{formatted_checkout_value}")
             if not output:
                 return "没有找到符合条件的出库信息。"
-            output.append("\n相关合同清单：")
+            output.append("\n📅相关合同清单：")
             output.extend(contract_set)
-            output.append(f"出库金额：{total_checkout_value:.2f}")
+            output.append(f"📌出库金额：{total_checkout_value:.2f}")
 
             return "\n".join(output)
         else:
