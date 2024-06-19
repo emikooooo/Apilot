@@ -442,10 +442,10 @@ class Apilot(Plugin):
                     contract_set.add(contract_no)
                     if isinstance(checkout_value, (int, float)):
                         total_checkout_value += checkout_value
-                        checkout_value = f"{checkout_value:.2f}"
+                        formatted_checkout_value = f"{checkout_value:.2f}"
                     else:
-                        checkout_value = 'N/A'
-                    output.append(f"MA5EHNDP1,{declaration_no},usd,{checkout_value:.2f}")
+                        formatted_checkout_value = 'N/A'
+                    output.append(f"MA5EHNDP1,{declaration_no},usd,{formatted_checkout_value}")
             if not output:
                 return "没有找到符合条件的出库信息。"
             output.append("\n相关合同清单：")
