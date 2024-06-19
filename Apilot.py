@@ -427,7 +427,7 @@ class Apilot(Plugin):
             return self.handle_error(data, "数据获取失败，请稍后再试")
 
     def get_ytcheckout(self, get_checkout_sn):
-        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/checkout_item?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/checkout_view?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
         data = self.make_request(url, "GET")
         
         if isinstance(data, list):
