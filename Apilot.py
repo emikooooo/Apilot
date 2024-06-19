@@ -432,13 +432,26 @@ class Apilot(Plugin):
         
         if isinstance(data, list):
             output = []
+            contract_set = set()
+            total_checkout_value = 0.0
             for item in data:
                 if item.get('checkout_sn') == get_checkout_sn:
                     declaration_no = item.get('declaration_no', 'N/A')
                     checkout_value = item.get('checkout_value', 'N/A')
+                    contract_no = item.get('contract_no', 'N/A')
+                    contract_set.add(contract_no)
+                    if isinstance(checkout_value, (int, float)):
+                        total_checkout_value += checkout_value
+                        checkout_value = f"{checkout_value:.2f}"
+                    else:
+                        checkout_value = 'N/A'
                     output.append(f"MA5EHNDP1,{declaration_no},usd,{checkout_value:.2f}")
             if not output:
                 return "没有找到符合条件的出库信息。"
+            output.append("\n相关合同清单：")
+            output.extend(contract_set)
+            output.append(f"出库金额：{total_checkout_value:.2f}")
+
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
