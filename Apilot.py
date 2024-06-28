@@ -112,6 +112,14 @@ class Apilot(Plugin):
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
             return
 
+        if content.startswith("查询代号"):
+            get_contacts_text = content[4:].strip()
+            content = self.get_ytcheckout(get_contacts_text)
+            reply = self.create_reply(ReplyType.TEXT, content)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            return
+
         # if content.startswith("搜人"):
         #     starname = content[2:].strip()
         #     content = self.get_starinfo(starname)
@@ -452,6 +460,27 @@ class Apilot(Plugin):
             output.extend(contract_set)
             output.append(f"📌出库金额：{total_checkout_value:.2f}")
 
+            return "\n".join(output)
+        else:
+            return self.handle_error(data, "数据获取失败，请稍后再试")
+
+    def get_contacts(self, get_contacts_text):
+        url = (
+            f"https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/contact?"
+            f"or=(name.like.*{get_contacts_text}*,"
+            f"dep.like.*{get_contacts_text}*,"
+            f"nick1.eq.{get_contacts_text},"
+            f"nick2.like.*{get_contacts_text}*)&apikey="
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        )
+        data = self.make_request(url, "GET")
+        if isinstance(data, list):
+            output = []
+            for item in data:
+                output.append(f"Name: {item['name']}, Dep: {item['dep']}, Mobile: {item['mobile']}")
+            if not output:
+                return "没有找到符合条件的联系人。"
+            output.insert(0, "📅找到联系人：")
             return "\n".join(output)
         else:
             return self.handle_error(data, "数据获取失败，请稍后再试")
