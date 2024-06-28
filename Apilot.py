@@ -477,7 +477,7 @@ class Apilot(Plugin):
         if isinstance(data, list):
             output = []
             for item in data:
-                output.append(f"Name: {item['name']}, Dep: {item['dep']}, Mobile: {item['mobile']}")
+                output.append(f"{item['name']}, {item['mobile']}, {item['dep']}")
             if not output:
                 return "没有找到符合条件的联系人。"
             output.insert(0, "📅找到联系人：")
