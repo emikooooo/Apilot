@@ -114,7 +114,7 @@ class Apilot(Plugin):
 
         if content.startswith("查询代号"):
             get_contacts_text = content[4:].strip()
-            content = self.get_ytcheckout(get_contacts_text)
+            content = self.get_contacts(get_contacts_text)
             reply = self.create_reply(ReplyType.TEXT, content)
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
