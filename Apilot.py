@@ -466,7 +466,7 @@ class Apilot(Plugin):
 
     def get_contacts(self, get_contacts_text):
         url = (
-            f"https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/contact?"
+            f"https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/contacts?"
             f"or=(name.like.*{get_contacts_text}*,"
             f"dep.like.*{get_contacts_text}*,"
             f"nick1.eq.{get_contacts_text},"
