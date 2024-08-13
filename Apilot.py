@@ -386,7 +386,7 @@ class Apilot(Plugin):
             return self.handle_error(data, "热榜获取失败，请稍后再试")
 
     def get_yt(self):
-        url = "https://cqqo4h25g6h20a2l8lu0.baseapi.memfiredb.com/rest/v1/remain?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI5OTk3MTM5NiwiaWF0IjoxNzIzMTcxMzk2LCJpc3MiOiJzdXBhYmFzZSJ9.iEraSZORhF5IQe0I6Q_QPfxd91ssMBPtVEOrFi8sGcQ"
+        url = "https://cqqo4h25g6h20a2l8lu0.baseapi.memfiredb.com/rest/v1/declaration_summary?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI5OTk3MTM5NiwiaWF0IjoxNzIzMTcxMzk2LCJpc3MiOiJzdXBhYmFzZSJ9.iEraSZORhF5IQe0I6Q_QPfxd91ssMBPtVEOrFi8sGcQ"
         data = self.make_request(url, "GET")
         
         if isinstance(data, list):
