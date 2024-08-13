@@ -386,7 +386,7 @@ class Apilot(Plugin):
             return self.handle_error(data, "热榜获取失败，请稍后再试")
 
     def get_yt(self):
-        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/remain?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        url = "https://cqqo4h25g6h20a2l8lu0.baseapi.memfiredb.com/rest/v1/remain?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI5OTk3MTM5NiwiaWF0IjoxNzIzMTcxMzk2LCJpc3MiOiJzdXBhYmFzZSJ9.iEraSZORhF5IQe0I6Q_QPfxd91ssMBPtVEOrFi8sGcQ"
         data = self.make_request(url, "GET")
         
         if isinstance(data, list):
@@ -397,9 +397,9 @@ class Apilot(Plugin):
             
             for item in data:
                 total_value += item.get("value", 0) / 10000
-                total_used_value += item.get("used_value", 0) / 10000
-                total_remain_value += item.get("remain_value", 0) / 10000
-                if item.get("remain_value", 0) != 0:
+                total_used_value += item.get("total_checkout_value", 0) / 10000
+                total_remain_value += item.get("remaining_value", 0) / 10000
+                if item.get("remaining_value", 0) != 0:
                     remain_value_non_zero_count += 1
             
             output = [
