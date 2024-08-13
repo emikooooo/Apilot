@@ -394,7 +394,7 @@ class Apilot(Plugin):
             total_used_value = 0
             total_remain_value = 0
             remain_value_non_zero_count = 0
-            contract_set = set()
+            contract_list = []
             
             for item in data:
                 total_value += item.get("value", 0) / 10000
@@ -403,7 +403,7 @@ class Apilot(Plugin):
                 contract_no = item.get('contract_no', 'N/A')
                 if item.get("remaining_value", 0) != 0:
                     remain_value_non_zero_count += 1
-                    contract_set.add(contract_no)
+                    contract_list.append(f"{contract_no} >> {remaining_value:.2f}万元")
             
             output = [
                 f"📌 YT查询结果：",
@@ -413,7 +413,7 @@ class Apilot(Plugin):
                 f"🟢 剩余可用：{total_remain_value:.2f}万元"
             ]
             output.append("\n📅可用合同清单：")
-            output.extend(contract_set)
+            output.extend(contract_list)
             output.append("\n💬 发送 \"YT出库查询\" 查询出库明细")
             return "\n".join(output)
         else:
