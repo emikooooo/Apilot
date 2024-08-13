@@ -401,6 +401,7 @@ class Apilot(Plugin):
                 total_used_value += item.get("total_checkout_value", 0) / 10000
                 total_remain_value += item.get("remaining_value", 0) / 10000
                 contract_no = item.get('contract_no', 'N/A')
+                remaining_value = item.get("remaining_value", 0) / 10000
                 if item.get("remaining_value", 0) != 0:
                     remain_value_non_zero_count += 1
                     contract_list.append(f"{contract_no} >> {remaining_value:.2f}万元")
