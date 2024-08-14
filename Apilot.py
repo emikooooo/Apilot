@@ -428,7 +428,7 @@ class Apilot(Plugin):
             output = []
             # 只保留最后5个出库记录
             last_five_records = data[-5:]
-            
+            output.append(f"📌 最近5条出库信息：\n")
             for item in last_five_records:
                 checkout_sn = item.get('checkout_no', 'N/A')
                 create_time = item.get('checkout_date', 'N/A')
