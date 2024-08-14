@@ -421,20 +421,24 @@ class Apilot(Plugin):
             return self.handle_error(data, "数据获取失败，请稍后再试")
 
     def get_ytck(self):
-        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/checkout?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        url = "https://cqqo4h25g6h20a2l8lu0.baseapi.memfiredb.com/rest/v1/checkout?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI5OTk3MTM5NiwiaWF0IjoxNzIzMTcxMzk2LCJpc3MiOiJzdXBhYmFzZSJ9.iEraSZORhF5IQe0I6Q_QPfxd91ssMBPtVEOrFi8sGcQ"
         data = self.make_request(url, "GET")
         
         if isinstance(data, list):
             output = []
-            for item in data:
-                checkout_sn = item.get('checkout_sn', 'N/A')
-                create_time = item.get('create_time', 'N/A')
-                total_amount = item.get('total_amount', 0) / 10000
+            # 只保留最后5个出库记录
+            last_five_records = data[-5:]
+            
+            for item in last_five_records:
+                checkout_sn = item.get('checkout_no', 'N/A')
+                create_time = item.get('checkout_date', 'N/A')
+                total_amount = item.get('checkout_value', 0) / 10000
                 try:
                     create_date = datetime.fromisoformat(create_time).date()
                 except ValueError:
                     create_date = 'N/A'
                 output.append(f"📊 出库单号：{checkout_sn}\n📅 出库时间：{create_date}\n🔴 核销金额：{total_amount:.2f}万元\n")
+            
             output.append(f"💬 发送 \"YT打印关单{checkout_sn}\" 打印出库单")
             return "\n".join(output)
         else:
