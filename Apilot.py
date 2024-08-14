@@ -445,7 +445,7 @@ class Apilot(Plugin):
             return self.handle_error(data, "数据获取失败，请稍后再试")
 
     def get_ytcheckout(self, get_checkout_sn):
-        url = "https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/checkout_view?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+        url = "https://cqqo4h25g6h20a2l8lu0.baseapi.memfiredb.com/rest/v1/declaration_list?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI5OTk3MTM5NiwiaWF0IjoxNzIzMTcxMzk2LCJpc3MiOiJzdXBhYmFzZSJ9.iEraSZORhF5IQe0I6Q_QPfxd91ssMBPtVEOrFi8sGcQ"
         data = self.make_request(url, "GET")
         
         if isinstance(data, list):
@@ -453,7 +453,7 @@ class Apilot(Plugin):
             contract_set = set()
             total_checkout_value = 0.0
             for item in data:
-                if item.get('checkout_sn') == get_checkout_sn:
+                if item.get('checkout_no') == get_checkout_sn:
                     declaration_no = item.get('declaration_no', 'N/A')
                     checkout_value = item.get('checkout_value', 'N/A')
                     contract_no = item.get('contract_no', 'N/A')
