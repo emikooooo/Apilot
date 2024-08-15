@@ -476,12 +476,12 @@ class Apilot(Plugin):
 
     def get_contacts(self, get_contacts_text):
         url = (
-            f"https://lhsglsbfjqfllcttrsge.supabase.co/rest/v1/contacts?"
+            f"https://cqqo4h25g6h20a2l8lu0.baseapi.memfiredb.com/rest/v1/contacts?"
             f"or=(name.like.*{get_contacts_text}*,"
             f"dep.like.*{get_contacts_text}*,"
             f"nick1.eq.{get_contacts_text},"
             f"nick2.like.*{get_contacts_text}*)&apikey="
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoc2dsc2JmanFmbGxjdHRyc2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNTU3ODQwNCwiZXhwIjoyMDMxMTU0NDA0fQ.01wgdMlOWkaOMhHczu4h6A6BbrIdNeCfyV70XUlapIw"
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI5OTk3MTM5NiwiaWF0IjoxNzIzMTcxMzk2LCJpc3MiOiJzdXBhYmFzZSJ9.iEraSZORhF5IQe0I6Q_QPfxd91ssMBPtVEOrFi8sGcQ"
         )
         data = self.make_request(url, "GET")
         if isinstance(data, list):
